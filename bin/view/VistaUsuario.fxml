@@ -13,7 +13,7 @@
    <children>
       <AnchorPane prefHeight="400.0" prefWidth="600.0">
          <children>
-            <TextArea fx:id="fieldExpression" layoutX="71.0" layoutY="24.0" onMouseClicked="#validateCaret" prefHeight="91.0" prefWidth="480.0" promptText="Ingrese la expresion">
+            <TextArea fx:id="fieldExpression" layoutX="71.0" layoutY="48.0" onMouseClicked="#validateCaret" prefHeight="91.0" prefWidth="477.0" promptText="Ingrese la expresion">
                <font>
                   <Font size="18.0" />
                </font>
@@ -53,6 +53,7 @@
             <Button fx:id="delete" layoutX="352.0" layoutY="166.0" mnemonicParsing="false" prefHeight="14.0" prefWidth="94.0" text="Eliminar" />
             <Button fx:id="previous" layoutX="457.0" layoutY="166.0" mnemonicParsing="false" text="&lt;" />
             <Button fx:id="next" layoutX="522.0" layoutY="166.0" mnemonicParsing="false" text="&gt;" />
+            <Button fx:id="verificarValidez" layoutX="352.0" layoutY="200.0" mnemonicParsing="false" onAction="#verificarVal" prefHeight="25.0" prefWidth="197.0" text="Verificar validez" />
          </children>
       </AnchorPane>
    </children>
