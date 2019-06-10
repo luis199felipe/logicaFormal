@@ -241,6 +241,15 @@ public class Tree <T extends Comparable<T>>
 			peso++;
 		}		
 	}
+	public void agregarOrdNodo(Nodo<T> raiz2, int ord) {
+		if(estaVacio()) {
+			raiz = raiz2;
+			peso++;
+		}else if(raiz.agregarOrd(raiz2,ord)){			
+			peso++;
+		}
+		
+	}
 	
 	public void agregarIzq(T elemento) {		
 		if(estaVacio()) {
@@ -376,5 +385,8 @@ public class Tree <T extends Comparable<T>>
 		}
 		
 	}
+
+
+	
 
 }

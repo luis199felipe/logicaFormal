@@ -54,7 +54,7 @@ public class Nodo<T extends Comparable<T>> {
 	}
 
 	public boolean agregarOrd(T nuevo, int ord) {
-		if (ord == 1) {
+		if (ord == -1) {
 			if (izquierdo == null) {
 				izquierdo = new Nodo<>(nuevo, this);
 				return true;
@@ -71,8 +71,29 @@ public class Nodo<T extends Comparable<T>> {
 			}
 
 		}
+	}
+	
+	public boolean agregarOrd(Nodo<T> nuevo, int ord) {
+		if (ord == -1) {
+			if (izquierdo == null) {
+				izquierdo = nuevo;
+				return true;
+			} else {
+				return izquierdo.agregarOrd(nuevo,ord);
+			}
+		} else {
+
+			if (derecho == null) {
+				derecho = nuevo;
+				return true;
+			} else {
+				return derecho.agregarOrd(nuevo,ord);
+			}
+
+		}
 
 	}
+
 
 	public boolean agregarIzq(T nuevo) {
 		if (izquierdo == null) {
