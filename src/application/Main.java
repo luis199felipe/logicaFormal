@@ -1,6 +1,7 @@
 package application;
 
 import java.io.IOException;
+import java.util.Optional;
 
 import javafx.application.Application;
 
@@ -9,6 +10,7 @@ import javafx.stage.Stage;
 import view.UserViewController;
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.layout.BorderPane;
 
 /**
@@ -51,11 +53,26 @@ public class Main extends Application {
 			rootLayout = (BorderPane) loader.load();
 			Scene scene = new Scene(rootLayout);
 			primaryStage.setScene(scene);
-			primaryStage.show();
+			TextInputDialog dialog = new TextInputDialog("walter");
+			dialog.setTitle("Configuración inicial");
+			dialog.setHeaderText("Numero de Premisas");
+			dialog.setContentText("#");
 
+			// Traditional way to get the response value.
+			Optional<String> result = dialog.showAndWait();
+			if (result.isPresent()){
+			    System.out.println("El numero de formulas son: " + result.get());
+			    try {
+					int npremisas = Integer.parseInt(result.get()+"");
+				} catch (Exception e) {
+					
+				}
+			}
+			primaryStage.show();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		
 	}
 
 	public void iniciarVistaUsuario() {

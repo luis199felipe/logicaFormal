@@ -166,38 +166,13 @@ public class UserViewController implements EventHandler<Event> {
 	public void verificarVal() {
 		Tree<Character> arbol = new Tree<>();
 		String exp = fieldExpression.getText();
-		crearArbol(arbol,exp);
+
 		
 	}
 	
 	
 
-	private Character crearArbol(Tree<Character> arbol,String exp) {
-		//Algoritmo de descomposicion.
-		if (exp.charAt(0)=='~') {
-			arbol.agregar('~');
-		}
-		int contPar = 0;
-		char simbolo = 0;
-		for (int i = 0; i < exp.length(); i++) {
-			char l = exp.charAt(i);
-			if (compararParentesis(l)+i==0) {
-				simbolo = exp.charAt(i+1);
-				arbol.agregarIzq(crearArbol(arbol, exp.substring(1, i)));
-				arbol.agregarDer(crearArbol(arbol, exp.substring(i+2, exp.length())));
-			}
-		}
-		return simbolo;
-	}
-	
-	public int compararParentesis(char l) {
-		if (l=='(') {
-			return 1;
-		}else if(l==')') {
-			return -1;
-		}
-		return 0;
-	}
+
 
 
 
