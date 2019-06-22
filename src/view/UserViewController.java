@@ -1,6 +1,7 @@
 package view;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import application.Main;
 import javafx.event.Event;
@@ -146,7 +147,7 @@ public class UserViewController implements EventHandler<Event> {
 		if (caretPreInsertion > 0 && caretPreInsertion + 1 < a.length() + 1) {
 			b = a.substring(caretPreInsertion - 1, caretPreInsertion + 1);
 
-			if (!b.equals("()")) {
+			if (!b.equals("()v()")) {
 				System.out.println("Esta mal");
 				fieldExpression.setEditable(false);
 			} else {
@@ -163,18 +164,13 @@ public class UserViewController implements EventHandler<Event> {
 	
 	
 	@FXML
-	public void verificarVal() {
-		Tree<Character> arbol = new Tree<>();
-		String exp = fieldExpression.getText();
-
-		
+	public void verificarFBF() {
+		String campoFormula = "(p)^((q)v(p))";
+		int atomicosIntroducidos = 3;
+		verificarFormulaBienFormada(campoFormula,atomicosIntroducidos);
 	}
 	
 	
-
-
-
-
 
 	/*
 	 * 
@@ -218,5 +214,121 @@ public class UserViewController implements EventHandler<Event> {
 		
 
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	private boolean verificarValidez() {
+		ArrayList<String> formulas = new ArrayList<>();
+		String conclusion = "";
+		int[][] matriz = new int[(int) Math.pow(2,formulas.size() )][formulas.size()+1];
+		
+		String exp = "(p)^((q)v(p))";
+		HashMap<Character,Character> valores = new HashMap<>();
+		valores.put('p','0');
+		valores.put('q','1');
+		valores.put('1','1');
+		valores.put('0','0');
+		
+		Tree<Character> arbol = verificarFormulaBienFormada(exp, 2);
+		arbol.setValorHojas(arbol.getRaiz(), 0, valores);		
+		arbol.evaluarInPreOrder(arbol.getRaiz(),valores);
+		System.out.println(arbol.getRaiz().getValor());
+		
+
+		
+		
+		
+		
+		
+		return true;
+
+	}
+	
+	
+	public Tree<Character> verificarFormulaBienFormada(String exp,int atomicosIntroducidos) {
+		Tree<Character> arbol = new Tree<>();
+		crearArbol(arbol, exp);
+
+		if (arbol.contarHojas()>=atomicosIntroducidos) {
+			return arbol;
+		}
+		return null;
+	}
+	
+	
+	public boolean esAtomico(char l) {
+
+		if (l == '~' || l == 'p' || l == 'q') {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	private Character crearArbol(Tree<Character> arbol, String exp) {
+
+		int contPar = 0;
+		char simbolo = 0;
+		boolean flag = true;
+		for (int i = 0; i < exp.length() && flag; i++) {
+			char l = exp.charAt(i);
+			contPar += compararParentesis(l);
+			if (contPar == 0 && i > 0 && i + 1 < exp.length() - 1) {
+				simbolo = exp.charAt(i + 1);
+				if (arbol.estaVacio()) {
+					arbol.agregarIzq(exp.charAt(i + 1));	
+				}
+				String exp1 = exp.substring(1, i);
+				String exp2 = exp.substring(i + 3, exp.length() - 1);
+				System.out.println("Parte 1:" + exp1);
+				System.out.println("Parte 2:" + exp2);
+				if (esAtomico(exp1.charAt(0))) {
+					arbol.agregarOrd(exp1.charAt(0), -1);
+				} else {
+					Tree<Character> subArbol = new Tree<>();
+					crearArbol(subArbol, exp2);
+					arbol.agregarOrdNodo(subArbol.getRaiz(), 1);
+				}
+
+				if (esAtomico(exp2.charAt(0))) {
+					arbol.agregarOrd(exp1.charAt(0), 1);
+				} else {
+					Tree<Character> subArbol = new Tree<>();
+					crearArbol(subArbol, exp2);
+					arbol.agregarOrdNodo(subArbol.getRaiz(), 1);
+				}
+
+				flag = false;
+			}
+		}
+		return simbolo;
+
+	}
+
+	public int compararParentesis(char l) {
+		if (l == '(') {
+			return 1;
+		} else if (l == ')') {
+			return -1;
+		}
+		return 0;
+	}
+
 
 }

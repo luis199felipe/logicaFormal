@@ -1,5 +1,7 @@
 package model;
 
+import java.util.HashMap;
+
 import model.colas.Cola;
 
 public class Tree <T extends Comparable<T>>
@@ -14,6 +16,8 @@ public class Tree <T extends Comparable<T>>
 	public boolean estaVacio() {
 		return raiz==null;
 	}
+	
+	
 	
 	
 	public void eliminar(Nodo<T> nodoActual, Nodo<T> nodoPadre, boolean eliminado, Nodo<T> nodoAux, T valor)
@@ -130,6 +134,12 @@ public class Tree <T extends Comparable<T>>
 		}
 		return -1;
 	}
+	
+	
+	public int contarHojas() {
+		
+		return contarHojas(raiz,0);
+	}
 
 	public boolean isEqualto(Tree<T> arbol, Nodo<T> nodo1, Nodo<T> nodo2, boolean identicos) 
 	{
@@ -223,7 +233,7 @@ public class Tree <T extends Comparable<T>>
 	 * Agrega un nuevo elemento al árbol
 	 * @param elemento Nuevo dato
 	 * @return true si lo pudo guardar
-	 */
+	 
 	public void agregar(T elemento) {		
 		if(estaVacio()) {
 			raiz = new Nodo<>(elemento);
@@ -231,7 +241,7 @@ public class Tree <T extends Comparable<T>>
 		}else if(raiz.agregar(elemento)){			
 			peso++;
 		}		
-	}
+	}*/
 	
 	public void agregarOrd(T elemento,int ord) {		
 		if(estaVacio()) {
@@ -264,7 +274,7 @@ public class Tree <T extends Comparable<T>>
 		if(estaVacio()) {
 			raiz = new Nodo<>(elemento);
 			peso++;
-		}else if(raiz.agregarIzq(elemento)){			
+		}else if(raiz.agregarDer(elemento)){			
 			peso++;
 		}		
 	}
@@ -341,7 +351,83 @@ public class Tree <T extends Comparable<T>>
 	public int getPeso() {
 		return peso;
 	}
+	public int setValorHojas(Nodo<T> nodo, int cont,HashMap<Character,Character> valores)  
+	{
+		if(raiz != null) 
+		{
+			if(nodo == null) 
+			{
+				return 0;
+			}
+			else if(nodo.esHoja()) 
+			{
+				nodo.setValor(valores.get(nodo.getElemento()));
+				return 1;
+			}
+			else 
+			{
+				cont = setValorHojas(nodo.getDerecho(), cont,valores) + setValorHojas(nodo.getIzquierdo(), cont,valores);
+				return cont;
+			}			
+		}
+		return -1;
+	}
+	
+	
+	public boolean esAtomico(Character l) {
+		
+		if (l == '~' || l == 'p' || l == 'q'|| l == '1' || l == '0') {
+			return true;
+		} else {
+			return false;
+		}
+	}
 
+	public  T evaluarInPreOrder(Nodo<T> n,HashMap<Character,Character> valores) {
+		if (n == null) {
+			return null;
+		} else {
+			if (n.getIzquierdo().getIzquierdo()!=null) {
+				System.out.println("Entro a izq"+n.getIzquierdo().getElemento());
+				evaluarInPreOrder(n.getIzquierdo(),valores);	
+			}
+			if (n.getDerecho().getDerecho()!=null) {
+				System.out.println("Entro a derecho "+n.getDerecho().getElemento());
+				evaluarInPreOrder(n.getDerecho(), valores);	
+			}
+			System.out.println("Va a empezar a verificar "+n.getElemento());
+			Character izq = n.getIzquierdo().getValor();
+			Character der = n.getDerecho().getValor();
+			
+			System.err.println(izq+" izq ");
+			System.err.println(der+" der ");
+			
+			if (esAtomico(izq) || esAtomico(der) ) {
+				if (n.getElemento().equals('^')) {
+					System.out.println("paso el if ^");
+					if (izq.equals('1') && der.equals('1')) {
+						n.setValor('1');
+						System.out.println("Guardo 1");
+					}else {
+						n.setValor('0');
+						System.out.println("Guardo 0");
+					}
+				}else if (n.getElemento().equals('v')) {
+					System.out.println("paso el if v");
+					if (izq.equals('1') || der.equals('1')) {
+						n.setValor('1');
+						System.out.println("Va a setear "+n.getValor()+" por 1");
+					}else {
+						n.setValor('0');
+						System.out.println("Va a setear "+n.getValor()+" por 1");
+					}
+				}
+			}
+						
+			return n.getElemento();
+		}
+	}
+	
 	public void imprimirInOrder(Nodo<T> n) {
 		if (n == null) {
 			return;
@@ -385,6 +471,9 @@ public class Tree <T extends Comparable<T>>
 		}
 		
 	}
+
+
+	
 
 
 	

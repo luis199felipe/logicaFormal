@@ -5,11 +5,12 @@ package model;
  * 
  * @param <T>
  */
-public class Nodo<T extends Comparable<T>> {
+public class Nodo<T> {
 
 	private Nodo<T> izquierdo, derecho;
 	private Nodo<T> padre;
 	private T elemento;
+	private Character valor;
 
 	/**
 	 * Constructor de la clase
@@ -17,8 +18,23 @@ public class Nodo<T extends Comparable<T>> {
 	 * @param elemento Dato del nodo
 	 */
 	public Nodo(T elemento) {
+		valor = '2';
 		this.elemento = elemento;
 	}
+	
+	
+
+	public Character getValor() {
+		return valor;
+	}
+
+
+
+	public void setValor(Character valor) {
+		this.valor = valor;
+	}
+
+
 
 	public Nodo(T elemento, Nodo<T> padre) {
 		this.elemento = elemento;
@@ -30,7 +46,7 @@ public class Nodo<T extends Comparable<T>> {
 	 * 
 	 * @param elemento Nuevo dato
 	 * @return true si lo pudo guardar
-	 */
+	
 	public boolean agregar(T nuevo) {
 		if (nuevo.compareTo(elemento) < 0) {
 			if (izquierdo == null) {
@@ -52,7 +68,7 @@ public class Nodo<T extends Comparable<T>> {
 
 		return false;
 	}
-
+ */
 	public boolean agregarOrd(T nuevo, int ord) {
 		if (ord == -1) {
 			if (izquierdo == null) {
@@ -100,7 +116,7 @@ public class Nodo<T extends Comparable<T>> {
 			izquierdo = new Nodo<>(nuevo, this);
 			return true;
 		} else {
-			return izquierdo.agregar(nuevo);
+			return izquierdo.agregarIzq(nuevo);
 		}
 	}
 
@@ -110,7 +126,7 @@ public class Nodo<T extends Comparable<T>> {
 			derecho = new Nodo<>(nuevo, this);
 			return true;
 		} else {
-			return derecho.agregar(nuevo);
+			return derecho.agregarDer(nuevo);
 		}
 
 	}

@@ -7,6 +7,7 @@ import javafx.application.Application;
 
 import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
+import model.Tree;
 import view.UserViewController;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -38,7 +39,7 @@ public class Main extends Application {
 
 		iniciarRaizLayout();
 		iniciarVistaUsuario();
-
+		
 	}
 
 	public static void main(String[] args) {
@@ -74,6 +75,8 @@ public class Main extends Application {
 		}
 		
 	}
+	
+	
 
 	public void iniciarVistaUsuario() {
 		try {
@@ -90,5 +93,5 @@ public class Main extends Application {
 			e.printStackTrace();
 		}
 	}
-
+	
 }
