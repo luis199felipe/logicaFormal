@@ -159,19 +159,19 @@ public class Tree <T extends Comparable<T>>
 			}
 			else 
 			{
-				System.out.println("1: " + nodo1.getElemento());
-				System.out.println("2: " + nodo2.getElemento());
-				System.out.println("3: " + (nodo1.getElemento() == nodo2.getElemento()));
+				//System.out.println("1: " + nodo1.getElemento());
+				//System.out.println("2: " + nodo2.getElemento());
+				//System.out.println("3: " + (nodo1.getElemento() == nodo2.getElemento()));
 				if(nodo1.getElemento() == nodo2.getElemento()) 
 				{
-					System.out.println("asd1");
+					//System.out.println("asd1");
 					identicos = isEqualto(arbol, nodo1.getIzquierdo(), nodo2.getIzquierdo(), identicos) &&
 							isEqualto(arbol, nodo1.getDerecho(), nodo2.getDerecho(), identicos);					
 					return identicos;
 				}
 				else 
 				{
-					System.out.println("asd2");
+					//System.out.println("asd2");
 					return false;
 				}
 			}
@@ -388,38 +388,38 @@ public class Tree <T extends Comparable<T>>
 			return null;
 		} else {
 			if (n.getIzquierdo().getIzquierdo()!=null) {
-				System.out.println("Entro a izq"+n.getIzquierdo().getElemento());
+				//System.out.println("Entro a izq"+n.getIzquierdo().getElemento());
 				evaluarInPreOrder(n.getIzquierdo(),valores);	
 			}
 			if (n.getDerecho().getDerecho()!=null) {
-				System.out.println("Entro a derecho "+n.getDerecho().getElemento());
+				//System.out.println("Entro a derecho "+n.getDerecho().getElemento());
 				evaluarInPreOrder(n.getDerecho(), valores);	
 			}
-			System.out.println("Va a empezar a verificar "+n.getElemento());
+			//System.out.println("Va a empezar a verificar "+n.getElemento());
 			Character izq = n.getIzquierdo().getValor();
 			Character der = n.getDerecho().getValor();
 			
-			System.err.println(izq+" izq ");
-			System.err.println(der+" der ");
+			//System.err.println(izq+" izq ");
+			//System.err.println(der+" der ");
 			
 			if (esAtomico(izq) || esAtomico(der) ) {
 				if (n.getElemento().equals('^')) {
-					System.out.println("paso el if ^");
+					//System.out.println("paso el if ^");
 					if (izq.equals('1') && der.equals('1')) {
 						n.setValor('1');
-						System.out.println("Guardo 1");
+						//System.out.println("Guardo 1");
 					}else {
 						n.setValor('0');
-						System.out.println("Guardo 0");
+						//System.out.println("Guardo 0");
 					}
 				}else if (n.getElemento().equals('v')) {
-					System.out.println("paso el if v");
+					//System.out.println("paso el if v");
 					if (izq.equals('1') || der.equals('1')) {
 						n.setValor('1');
-						System.out.println("Va a setear "+n.getValor()+" por 1");
+						//System.out.println("Va a setear "+n.getValor()+" por 1");
 					}else {
 						n.setValor('0');
-						System.out.println("Va a setear "+n.getValor()+" por 1");
+						//System.out.println("Va a setear "+n.getValor()+" por 1");
 					}
 				}
 			}
@@ -466,7 +466,7 @@ public class Tree <T extends Comparable<T>>
 				espacio+=" ";
 			}
 			
-			System.out.println(espacio+n.getElemento());
+			//System.out.println(espacio+n.getElemento());
 			imprimirArbolHorizontal(n.getIzquierdo());
 		}
 		

@@ -9,8 +9,19 @@ public class pruebas {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		//verificarVal();
+		
 		verificarValidez();
+//		HashMap<Character,Character> valores = new HashMap<>();
+//		valores.put('p', '1');
+//		valores.put('q', '0');
+//		valores.put('1','1');
+//		valores.put('0','0');
+//		String exp = "(p)^((q)v(p))";
+//		Tree<Character> arbol = verificarFormulaBienFormada(exp, 2);
+//		arbol.setValorHojas(arbol.getRaiz(), 0, valores);		
+//		arbol.evaluarInPreOrder(arbol.getRaiz(),valores);
+//		System.out.println(arbol.getRaiz().getValor());
+		
 	}
 	
 	
@@ -22,28 +33,30 @@ public class pruebas {
 		String conclusion = "";
 		int[][] matriz = new int[(int) Math.pow(2,formulas.size() )][formulas.size()+1];
 		
-		String exp = "(p)^((q)v(p))";
-		int[] eval = evaluarFormula(exp, 2);
+		String exp = "(p)^((q)^(p))";
+		char[] eval = evaluarFormula(exp, 2);
 		
-		//System.out.println(arbol.getRaiz().getValor());
+
 		
 		return true;
 
 	}
-	private static int[] evaluarFormula(String exp,int atomicosIntroducidos) {
+	private static char[] evaluarFormula(String exp,int atomicosIntroducidos) {
 		int saltos = (int)Math.pow(2, atomicosIntroducidos);
-		int[] result = new int[saltos];
+		char[] result = new char[saltos];
 		
 		int cont = 1;
 		
 		for (int i = 0; i < result.length; i++) {
 			HashMap<Character,Character> valores = new HashMap<>();
-			valores = llenarHashMap(valores,saltos,atomicosIntroducidos,i+1);
+			valores = llenarHashMap(valores,saltos,atomicosIntroducidos,i);
 			Tree<Character> arbol = verificarFormulaBienFormada(exp, 2);
 			arbol.setValorHojas(arbol.getRaiz(), 0, valores);		
 			arbol.evaluarInPreOrder(arbol.getRaiz(),valores);
-			result[i] = (int)arbol.getRaiz().getValor();
+			result[i] = arbol.getRaiz().getValor();
+			System.out.println(i+" "+result[i]);
 		}
+		 
 		
 		
 		return result;
@@ -52,19 +65,20 @@ public class pruebas {
 	
 
 	private static HashMap<Character, Character> llenarHashMap(HashMap<Character, Character> valores, int saltos, int atomicosIntroducidos,int interpretacion) {
-	
-		for (int i = 1; i <= atomicosIntroducidos; i++) {
-			char a = (char)(112+i);
-			/*
-			 if (interpretacion%isaltos/(int)Math.pow(2, i)) {
-					valores.put(a,'0');
-			 }else{
-					valores.put(a,'1');
-			}*/		
-			
+		String binario = Integer.toBinaryString(interpretacion);
 
+		int tamano = binario.length();
+		if (binario.length()<atomicosIntroducidos) {
 			
-			
+			for (int i = 0; i < atomicosIntroducidos-tamano; i++) {
+				
+				binario = "0"+binario;
+			}
+		}
+		
+		for (int i = 0; i < atomicosIntroducidos; i++) {
+			char a = (char)(112+i);
+			valores.put(a,binario.charAt(i));
 		}
 		
 		return valores;		
@@ -108,18 +122,17 @@ public class pruebas {
 				}
 				String exp1 = exp.substring(1, i);
 				String exp2 = exp.substring(i + 3, exp.length() - 1);
-				System.out.println("Parte 1:" + exp1);
-				System.out.println("Parte 2:" + exp2);
+				
 				if (esAtomico(exp1.charAt(0))) {
 					arbol.agregarOrd(exp1.charAt(0), -1);
 				} else {
 					Tree<Character> subArbol = new Tree<>();
-					crearArbol(subArbol, exp2);
-					arbol.agregarOrdNodo(subArbol.getRaiz(), 1);
+					crearArbol(subArbol, exp1);
+					arbol.agregarOrdNodo(subArbol.getRaiz(), -1);
 				}
 
 				if (esAtomico(exp2.charAt(0))) {
-					arbol.agregarOrd(exp1.charAt(0), 1);
+					arbol.agregarOrd(exp2.charAt(0), 1);
 				} else {
 					Tree<Character> subArbol = new Tree<>();
 					crearArbol(subArbol, exp2);
