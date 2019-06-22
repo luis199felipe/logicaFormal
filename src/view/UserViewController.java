@@ -250,9 +250,6 @@ public class UserViewController implements EventHandler<Event> {
 		arbol.evaluarInPreOrder(arbol.getRaiz(),valores);
 		System.out.println(arbol.getRaiz().getValor());
 		
-
-		
-		
 		
 		
 		

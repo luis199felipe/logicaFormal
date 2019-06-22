@@ -8,6 +8,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
 import model.Tree;
+import view.ControladorVista;
 import view.UserViewController;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -37,8 +38,7 @@ public class Main extends Application {
 		this.primaryStage = primaryStage;
 		this.primaryStage.setTitle("Proyecto final logica Formal");
 
-		iniciarRaizLayout();
-		iniciarVistaUsuario();
+		iniciarVista();
 		
 	}
 
@@ -46,29 +46,33 @@ public class Main extends Application {
 		launch(args);
 	}
 
-	public void iniciarRaizLayout() {
+	public void iniciarVista() {
 		try {
 
 			FXMLLoader loader = new FXMLLoader();
-			loader.setLocation(Main.class.getResource("/view/VistaRaiz.fxml"));
+			loader.setLocation(Main.class.getResource("/view/Vista.fxml"));
 			rootLayout = (BorderPane) loader.load();
 			Scene scene = new Scene(rootLayout);
 			primaryStage.setScene(scene);
-			TextInputDialog dialog = new TextInputDialog("walter");
-			dialog.setTitle("Configuración inicial");
-			dialog.setHeaderText("Numero de Premisas");
-			dialog.setContentText("#");
+			
+			
+//			TextInputDialog dialog = new TextInputDialog("walter");
+//			dialog.setTitle("Configuración inicial");
+//			dialog.setHeaderText("Numero de Premisas");
+//			dialog.setContentText("#");
 
 			// Traditional way to get the response value.
-			Optional<String> result = dialog.showAndWait();
-			if (result.isPresent()){
-			    System.out.println("El numero de formulas son: " + result.get());
-			    try {
-					int npremisas = Integer.parseInt(result.get()+"");
-				} catch (Exception e) {
-					
-				}
-			}
+//			Optional<String> result = dialog.showAndWait();
+//			if (result.isPresent()){
+//			    System.out.println("El numero de formulas son: " + result.get());
+//			    try {
+//					int npremisas = Integer.parseInt(result.get()+"");
+//				} catch (Exception e) {
+//					
+//				}
+//			}
+			
+			ControladorVista controladorVista = loader.getController();
 			primaryStage.show();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -78,20 +82,20 @@ public class Main extends Application {
 	
 	
 
-	public void iniciarVistaUsuario() {
-		try {
-			// Carga la vista que tendra el usuario
-			FXMLLoader loader = new FXMLLoader();
-			loader.setLocation(Main.class.getResource("/view/VistaUsuario.fxml"));
-			Group loginVista = (Group) loader.load();
-			rootLayout.setCenter(loginVista);
-
-			controladorVistaUsuario = loader.getController();
-			controladorVistaUsuario.asignarMain(this);
-
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
+//	public void iniciarVistaUsuario() {
+//		try {
+//			// Carga la vista que tendra el usuario
+//			FXMLLoader loader = new FXMLLoader();
+//			loader.setLocation(Main.class.getResource("/view/VistaUsuario.fxml"));
+//			Group loginVista = (Group) loader.load();
+//			rootLayout.setCenter(loginVista);
+//
+//			
+//			controladorVistaUsuario.asignarMain(this);
+//
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+//	}
 	
 }
