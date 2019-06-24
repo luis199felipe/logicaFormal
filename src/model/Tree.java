@@ -402,6 +402,8 @@ public class Tree <T extends Comparable<T>>
 				}
 				
 			}
+		}else if(esAtomico((char)n.getElemento())) {
+			n.setValor(valores.get(n.getElemento()));
 		}else {
 			evaluarInPreOrder2(n,valores);
 		}

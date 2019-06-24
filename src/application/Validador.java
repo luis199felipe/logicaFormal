@@ -27,14 +27,15 @@ public class Validador {
 		char[][] matriz = new char[formulas.size()][(int) Math.pow(2, formulas.size())];
 
 		for (int i = 0; i < formulas.size(); i++) {
-			// System.out.println("Formula " + i);
+			System.out.println("Formula " + i);
 			matriz[i] = evaluarFormula(formulas.get(i), atomicosIntroducidos);
+			//System.out.println(matriz[i].toString());
 		}
 
 		for (int j = 0; j < matriz[0].length; j++) {
 			boolean InterpValida = true;
 			for (int i = 0; i < matriz.length && InterpValida; i++) {
-				// System.err.println(i + " " + j + " " + matriz[i][j]);
+				 System.out.println(i + " " + j + " " + matriz[i][j]);
 				if (matriz[i][j] == '1') {
 					if (j == matriz[0].length - 1) {
 						return true;
@@ -63,7 +64,7 @@ public class Validador {
 			arbol.setValorHojas(arbol.getRaiz(), 0, valores);
 			arbol.evaluarInPreOrder(arbol.getRaiz(), valores);
 			result[i] = arbol.getRaiz().getValor();
-			 System.out.println(i + "                     " + result[i]);
+			System.out.println(i + "     " + result[i]);
 		}
 		resultados.add(result);
 		return result;
@@ -81,7 +82,7 @@ public class Validador {
 			}
 		}
 
-		System.out.println(binario);
+		//System.out.println(binario);
 
 		for (int i = 0; i < atomicosIntroducidos; i++) {
 			char a = (char) (112 + i);
@@ -95,10 +96,9 @@ public class Validador {
 		Tree<Character> arbol = new Tree<>();
 		crearArbol(arbol, exp);
 
-		if (arbol.contarHojas() >= atomicosIntroducidos) {
-			return arbol;
-		}
-		return null;
+	
+		return arbol;
+	
 	}
 
 	public static boolean esAtomico(char l) {
@@ -111,7 +111,7 @@ public class Validador {
 	}
 
 	private void crearArbol(Tree<Character> arbol, String exp) {
-		if (exp.charAt(0) == '~') {
+		if (exp.charAt(0) == '~' ) {
 
 			Tree<Character> subArbol = new Tree<>();
 			Nodo<Character> n = new Nodo<>('~');
@@ -120,7 +120,10 @@ public class Validador {
 			crearArbol2(arbol, exp.substring(2, exp.length() - 1));
 			subArbol.agregarOrdNodo(arbol.getRaiz(), 1);
 			arbol.setRaiz(subArbol.getRaiz());
-		} else {
+		}else if(esAtomico(exp.charAt(0))) {
+			Nodo<Character> n = new Nodo<Character>(exp.charAt(0));
+			arbol.setRaiz(n);
+		}else {
 			crearArbol2(arbol, exp);
 		}
 	}

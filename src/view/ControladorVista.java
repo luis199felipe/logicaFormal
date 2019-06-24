@@ -456,11 +456,14 @@ public class ControladorVista {
 //		conclusion = conclusion.replace("->", "e");
 //		premisasOperables.add(conclusion);
 
+		
+		
 		premisasOperables.add("(p)e(q)");
 		premisasOperables.add("p");
 		premisasOperables.add("q");
 
 		boolean validez = validador.verificarValidezConjuntoFormulas(premisasOperables, 2);
+		System.err.println(validez);
 		//cargarTabla(validador.getResultados());
 		//validador.limpiarResultados();
 
