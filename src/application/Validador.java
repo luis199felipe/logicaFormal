@@ -6,51 +6,35 @@ import java.util.HashMap;
 import model.Nodo;
 import model.Tree;
 
-public class pruebas {
+public class Validador {
 
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
+	private ArrayList<char[]> resultados;
 
-		// evaluarFormula("((p)e(q))^((q)e(r))", 3); // Aqui van la expresion y el
-		// numero de atomicos
-
-		HashMap<Character,Character> valores = new HashMap<>();
-		valores.put('p', '0');
-		valores.put('q', '1');
-		valores.put('1','1');
-		valores.put('0','0');
-		String exp = "~((p)^(q))";
-		Tree<Character> arbol = verificarFormulaBienFormada(exp, 2);
-		arbol.setValorHojas(arbol.getRaiz(), 0, valores);		
-		arbol.evaluarInPreOrder(arbol.getRaiz(),valores);
-		System.out.println(arbol.getRaiz().getValor());
-
-		
-		//Ejemplo de consecuencia logica valida
-//		ArrayList<String> formulas = new ArrayList<>();
-//		String exp1 = "(p)^(q)";
-//		String conclusion = "(p)v(q)";
-//
-//		formulas.add(exp1);
-//		formulas.add(conclusion);
-//		
-//		boolean validez = verificarValidezConjuntoFormulas(formulas, 2);
-//		System.out.println(validez);
+	public ArrayList<char[]> getResultados() {
+		return resultados;
 	}
 
-	private static boolean verificarValidezConjuntoFormulas(ArrayList<String> formulas, int atomicosIntroducidos) {
+	public void setResultados(ArrayList<char[]> resultados) {
+		this.resultados = resultados;
+	}
+
+	public Validador() {
+		resultados = new ArrayList<>();
+	}
+
+	public boolean verificarValidezConjuntoFormulas(ArrayList<String> formulas, int atomicosIntroducidos) {
 		// [Interpretaciones][formulas]
 		char[][] matriz = new char[formulas.size()][(int) Math.pow(2, formulas.size())];
 
 		for (int i = 0; i < formulas.size(); i++) {
-			//System.out.println("Formula " + i);
+			// System.out.println("Formula " + i);
 			matriz[i] = evaluarFormula(formulas.get(i), atomicosIntroducidos);
 		}
 
 		for (int j = 0; j < matriz[0].length; j++) {
 			boolean InterpValida = true;
 			for (int i = 0; i < matriz.length && InterpValida; i++) {
-				//System.err.println(i + " " + j + " " + matriz[i][j]);
+				// System.err.println(i + " " + j + " " + matriz[i][j]);
 				if (matriz[i][j] == '1') {
 					if (j == matriz[0].length - 1) {
 						return true;
@@ -68,11 +52,9 @@ public class pruebas {
 
 	}
 
-	private static char[] evaluarFormula(String exp, int atomicosIntroducidos) {
+	private char[] evaluarFormula(String exp, int atomicosIntroducidos) {
 		int saltos = (int) Math.pow(2, atomicosIntroducidos);
 		char[] result = new char[saltos];
-
-		int cont = 1;
 
 		for (int i = 0; i < result.length; i++) {
 			HashMap<Character, Character> valores = new HashMap<>();
@@ -81,13 +63,13 @@ public class pruebas {
 			arbol.setValorHojas(arbol.getRaiz(), 0, valores);
 			arbol.evaluarInPreOrder(arbol.getRaiz(), valores);
 			result[i] = arbol.getRaiz().getValor();
-			//System.out.println(i + " " + result[i]);
+			 System.out.println(i + "                     " + result[i]);
 		}
-
+		resultados.add(result);
 		return result;
 	}
 
-	private static HashMap<Character, Character> llenarHashMap(HashMap<Character, Character> valores, int saltos,
+	private HashMap<Character, Character> llenarHashMap(HashMap<Character, Character> valores, int saltos,
 			int atomicosIntroducidos, int interpretacion) {
 		String binario = Integer.toBinaryString(interpretacion);
 
@@ -98,7 +80,7 @@ public class pruebas {
 				binario = "0" + binario;
 			}
 		}
-		
+
 		System.out.println(binario);
 
 		for (int i = 0; i < atomicosIntroducidos; i++) {
@@ -109,7 +91,7 @@ public class pruebas {
 		return valores;
 	}
 
-	public static Tree<Character> verificarFormulaBienFormada(String exp, int atomicosIntroducidos) {
+	public Tree<Character> verificarFormulaBienFormada(String exp, int atomicosIntroducidos) {
 		Tree<Character> arbol = new Tree<>();
 		crearArbol(arbol, exp);
 
@@ -121,41 +103,39 @@ public class pruebas {
 
 	public static boolean esAtomico(char l) {
 
-		if (l == 'p' || l == 'r' || l == 'q') {
+		if (l == 'p' || l == 'r' || l == 'q' || l == 's' || l == 't' || l == 'u') {
 			return true;
 		} else {
 			return false;
 		}
 	}
-	
-	
-	private static void crearArbol(Tree<Character> arbol, String exp) {
-		if (exp.charAt(0)=='~') {
-			
+
+	private void crearArbol(Tree<Character> arbol, String exp) {
+		if (exp.charAt(0) == '~') {
+
 			Tree<Character> subArbol = new Tree<>();
 			Nodo<Character> n = new Nodo<>('~');
 			subArbol.setRaiz(n);
-			
+
 			crearArbol2(arbol, exp.substring(2, exp.length() - 1));
-			subArbol.agregarOrdNodo(arbol.getRaiz(),1);
+			subArbol.agregarOrdNodo(arbol.getRaiz(), 1);
 			arbol.setRaiz(subArbol.getRaiz());
-		}else {
+		} else {
 			crearArbol2(arbol, exp);
 		}
 	}
-	
-	
-	private static void crearArbol2(Tree<Character> arbol, String exp) {
+
+	private void crearArbol2(Tree<Character> arbol, String exp) {
 
 		int contPar = 0;
 		char simbolo = 0;
 		boolean flag = true;
-		
+
 		for (int i = 0; i < exp.length() && flag; i++) {
 			char l = exp.charAt(i);
 			contPar += compararParentesis(l);
 			if (contPar == 0 && i > 0 && i + 1 < exp.length() - 1) {
-				if (arbol.estaVacio() ) {
+				if (arbol.estaVacio()) {
 					arbol.agregarIzq(exp.charAt(i + 1));
 
 				}
@@ -210,16 +190,20 @@ public class pruebas {
 				flag = false;
 			}
 		}
-		
 
 	}
 
-	public static int compararParentesis(char l) {
+	public int compararParentesis(char l) {
 		if (l == '(') {
 			return 1;
 		} else if (l == ')') {
 			return -1;
 		}
 		return 0;
+	}
+
+	public void limpiarResultados() {
+		resultados.clear();
+		
 	}
 }

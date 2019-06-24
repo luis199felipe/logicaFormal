@@ -1,8 +1,14 @@
 package view;
 
 import java.util.ArrayList;
+
 import java.util.HashMap;
 
+import application.Validador;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
@@ -17,11 +23,11 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Separator;
+import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
-import model.Tree;
 
 public class ControladorVista {
 
@@ -86,7 +92,7 @@ public class ControladorVista {
 	private TextArea campoFormula;
 
 	@FXML
-	private TableView<String> tablaVerificacionValidez;
+	private TableView<StringProperty> tablaVerificacionValidez;
 
 	@FXML
 	private Button botonCondicional;
@@ -108,20 +114,18 @@ public class ControladorVista {
 
 	private ArrayList<String> operadores;
 
+	private Validador validador;
+
 	// esta es la lista de premisas normalitas con las que se va a trabajar(estan
 	// tal y como se ingresan en el campo)
 	// para cuando esten aca ya debieron haber sido validadas
 	private ArrayList<String> premisas;
-
+	private ArrayList<String> premisasOperables;
+	private ArrayList<String> atomosTotales;
+	private int atomosParciales;
 	private ArrayList<TextField> premisasVisuales;
-
 	private String conclusion;
-
-	// este numero de atomos solo se puede usar en la verficacion de fbf
-	private int numeroAtomos;
-
 	private int premisaAeliminar;
-
 	private TextField premisaElim;
 
 	/*
@@ -142,7 +146,10 @@ public class ControladorVista {
 		campoFormula.addEventFilter(KeyEvent.ANY, filter);
 		conclusion = "";
 		premisas = new ArrayList<>();
+		premisasOperables = new ArrayList<>();
 		premisasVisuales = new ArrayList<>();
+		atomosTotales = new ArrayList<>();
+		validador = new Validador();
 	}
 
 	@FXML
@@ -167,7 +174,7 @@ public class ControladorVista {
 		}
 		botonGuardarPremisa.setDisable(true);
 		botonGuardarConclusion.setDisable(true);
-
+		atomosParciales = 0;
 		campoFormula.clear();
 		actualizarFormaEstandar();
 	}
@@ -268,7 +275,10 @@ public class ControladorVista {
 						atomo = "t";
 
 					}
-					numeroAtomos++;
+					atomosParciales++;
+					if (!atomosTotales.contains(atomo)) {
+						atomosTotales.add(atomo);
+					}
 					campoFormula.insertText(campoFormula.getCaretPosition(), atomo + "");
 				} else {
 
@@ -302,7 +312,7 @@ public class ControladorVista {
 	@FXML
 	public void eliminarAtomo() {
 		campoFormula.setText("");
-		numeroAtomos = 0;
+		atomosParciales = 0;
 		botonGuardarPremisa.setDisable(true);
 		botonGuardarConclusion.setDisable(true);
 
@@ -314,9 +324,38 @@ public class ControladorVista {
 		if (!premisas.isEmpty()) {
 
 			if (premisaElim != null) {
+				String p = premisas.get(premisaAeliminar);
 				premisas.remove(premisaAeliminar);
 				actualizarFormaEstandar();
-				System.out.println("ebtra");
+				// si elimina una premisa hay que tener en cuenta
+				// la cantidad de atomos totales
+				//
+
+				if (p.contains("p")) {
+					buscarActualizar("p");
+				}
+
+				if (p.contains("q")) {
+					buscarActualizar("q");
+
+				}
+				if (p.contains("r")) {
+					buscarActualizar("r");
+
+				}
+				if (p.contains("s")) {
+					buscarActualizar("s");
+
+				}
+				if (p.contains("t")) {
+					buscarActualizar("t");
+
+				}
+				if (p.contains("u")) {
+					buscarActualizar("u");
+
+				}
+
 			} else {
 				Alert a = new Alert(AlertType.ERROR, "Debe seleccionar una premisa", ButtonType.OK);
 				a.showAndWait();
@@ -325,6 +364,24 @@ public class ControladorVista {
 			Alert a = new Alert(AlertType.ERROR, "No hay premisas", ButtonType.OK);
 			a.showAndWait();
 		}
+	}
+
+	private void buscarActualizar(String s) {
+
+		boolean esta = false;
+		for (int i = 0; i < premisas.size() && esta == false; i++) {
+			if (premisas.get(i).contains(s)) {
+				esta = true;
+			}
+		}
+
+		if (conclusion.contains(s)) {
+			esta = true;
+		}
+		if (!esta) {
+			atomosTotales.remove(s);
+		}
+
 	}
 
 	@FXML
@@ -336,8 +393,9 @@ public class ControladorVista {
 		actualizarFormaEstandar();
 		separadorConclusion.setVisible(false);
 		campoConclusion.setVisible(false);
-		numeroAtomos = 0;
-
+		atomosParciales = 0;
+		atomosTotales.clear();
+		
 	}
 
 	private EventHandler<KeyEvent> filter = new EventHandler<KeyEvent>() {
@@ -366,18 +424,14 @@ public class ControladorVista {
 
 		if (!campoFormula.getText().isEmpty()) {
 
-			System.out.println(numeroAtomos);
-
 			try {
-				String campoFormula = "(p)^((q)v(p))";
-				int atomicosIntroducidos = 3;
-				verificarFormulaBienFormada(campoFormula, atomicosIntroducidos) ;
-				
+				validador.verificarFormulaBienFormada(campoFormula.getText(), atomosParciales);
+
 				botonGuardarPremisa.setDisable(false);
 				botonGuardarConclusion.setDisable(false);
-				
+
 			} catch (Exception e) {
-				
+
 			}
 		} else {
 			Alert a = new Alert(AlertType.ERROR, "El campo  de la formula no debe estar vacio", ButtonType.OK);
@@ -386,91 +440,72 @@ public class ControladorVista {
 
 	}
 
-	public Tree<Character> verificarFormulaBienFormada(String exp, int atomicosIntroducidos) {
-		Tree<Character> arbol = new Tree<>();
-		crearArbol(arbol, exp);
-
-		if (arbol.contarHojas() >= atomicosIntroducidos) {
-			return arbol;
-		}
-		return null;
-	}
-
-	private Character crearArbol(Tree<Character> arbol, String exp) {
-
-		int contPar = 0;
-		char simbolo = 0;
-		boolean flag = true;
-		for (int i = 0; i < exp.length() && flag; i++) {
-			char l = exp.charAt(i);
-			contPar += compararParentesis(l);
-			if (contPar == 0 && i > 0 && i + 1 < exp.length() - 1) {
-				simbolo = exp.charAt(i + 1);
-				if (arbol.estaVacio()) {
-					arbol.agregarIzq(exp.charAt(i + 1));
-				}
-				String exp1 = exp.substring(1, i);
-				String exp2 = exp.substring(i + 3, exp.length() - 1);
-				System.out.println("Parte 1:" + exp1);
-				System.out.println("Parte 2:" + exp2);
-				if (esAtomico(exp1.charAt(0))) {
-					arbol.agregarOrd(exp1.charAt(0), -1);
-				} else {
-					Tree<Character> subArbol = new Tree<>();
-					crearArbol(subArbol, exp2);
-					arbol.agregarOrdNodo(subArbol.getRaiz(), 1);
-				}
-
-				if (esAtomico(exp2.charAt(0))) {
-					arbol.agregarOrd(exp1.charAt(0), 1);
-				} else {
-					Tree<Character> subArbol = new Tree<>();
-					crearArbol(subArbol, exp2);
-					arbol.agregarOrdNodo(subArbol.getRaiz(), 1);
-				}
-
-				flag = false;
-			}
-		}
-		return simbolo;
-
-	}
-
-	public int compararParentesis(char l) {
-		if (l == '(') {
-			return 1;
-		} else if (l == ')') {
-			return -1;
-		}
-		return 0;
-	}
-
-	public boolean esAtomico(char l) {
-
-		if (l == '~' || l == 'p' || l == 'q') {
-			return true;
-		} else {
-			return false;
-		}
-	}
-
 	@FXML
 	public void verificarValidez() {
-		ArrayList<String> formulas = new ArrayList<>();
-		String conclusion = "";
-		int[][] matriz = new int[(int) Math.pow(2, formulas.size())][formulas.size() + 1];
 
-		String exp = "(p)^((q)v(p))";
-		HashMap<Character, Character> valores = new HashMap<>();
-		valores.put('p', '0');
-		valores.put('q', '1');
-		valores.put('1', '1');
-		valores.put('0', '0');
+//		for (int i = 0; i < premisas.size(); i++) {
+//
+//			String prem = premisas.get(i);
+//			prem = prem.replace("<->", "s");
+//			prem = prem.replace("->", "e");
+//			premisasOperables.add(prem);
+//
+//		}
+//
+//		conclusion = conclusion.replace("<->", "s");
+//		conclusion = conclusion.replace("->", "e");
+//		premisasOperables.add(conclusion);
 
-		Tree<Character> arbol = verificarFormulaBienFormada(exp, 2);
-		arbol.setValorHojas(arbol.getRaiz(), 0, valores);
-		arbol.evaluarInPreOrder(arbol.getRaiz(), valores);
-		System.out.println(arbol.getRaiz().getValor());
+		premisasOperables.add("(p)e(q)");
+		premisasOperables.add("p");
+		premisasOperables.add("q");
+
+		boolean validez = validador.verificarValidezConjuntoFormulas(premisasOperables, 2);
+		//cargarTabla(validador.getResultados());
+		//validador.limpiarResultados();
+
+		//mostrarConclusion(validez);
+
+	}
+
+	private void mostrarConclusion(boolean validez) {
+		if (validez) {
+			campoConclusionFinal
+					.setText("EL argumento es valido, ya que la conclusion es consecuencia logica de las premsias");
+		} else {
+			campoConclusionFinal
+			.setText("EL argumento  NO es valido, ya que la conclusion  NO es consecuencia logica de las premsias");
+		}
+
+	}
+
+	private void cargarTabla(ArrayList<char[]> resultados) {
+
+		ObservableList<StringProperty> x = FXCollections.observableArrayList();
+		for (int i = 0; i < (int) Math.pow(2, 2); i++) {
+
+			String a = "";
+			for (int j = 0; j < resultados.size(); j++) {
+
+				a += (resultados.get(j)[i]);
+			}
+			x.add(new SimpleStringProperty(a));
+
+		}
+		tablaVerificacionValidez.setItems(x);
+
+		for (int i = 0; i < premisasOperables.size(); i++) {
+			TableColumn<StringProperty, String> nuevaColumna = new TableColumn<>();
+			tablaVerificacionValidez.getColumns().add(nuevaColumna);
+
+			nuevaColumna.setText(premisasOperables.get(i));
+
+			int a = i;
+			nuevaColumna.setCellValueFactory(
+					cellData -> new SimpleStringProperty(cellData.getValue().get().charAt(a) + ""));
+
+		}
+
 	}
 
 }

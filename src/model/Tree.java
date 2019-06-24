@@ -376,7 +376,7 @@ public class Tree <T extends Comparable<T>>
 	
 	public boolean esAtomico(Character l) {
 		if (l!=null) {
-			if (l == 'p' || l == 'q'|| l == 'r'||  l == '1' || l == '0') {
+			if (l == 'p' || l == 'q'|| l == 'r'||  l == '1' || l == '0'|| l == 's'|| l == 't'|| l == 'u') {
 				return true;
 			} 	
 		}
