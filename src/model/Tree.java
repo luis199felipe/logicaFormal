@@ -159,19 +159,19 @@ public class Tree <T extends Comparable<T>>
 			}
 			else 
 			{
-				//System.out.println("1: " + nodo1.getElemento());
-				//System.out.println("2: " + nodo2.getElemento());
-				//System.out.println("3: " + (nodo1.getElemento() == nodo2.getElemento()));
+				////System.out.println("1: " + nodo1.getElemento());
+				////System.out.println("2: " + nodo2.getElemento());
+				////System.out.println("3: " + (nodo1.getElemento() == nodo2.getElemento()));
 				if(nodo1.getElemento() == nodo2.getElemento()) 
 				{
-					//System.out.println("asd1");
+					////System.out.println("asd1");
 					identicos = isEqualto(arbol, nodo1.getIzquierdo(), nodo2.getIzquierdo(), identicos) &&
 							isEqualto(arbol, nodo1.getDerecho(), nodo2.getDerecho(), identicos);					
 					return identicos;
 				}
 				else 
 				{
-					//System.out.println("asd2");
+					////System.out.println("asd2");
 					return false;
 				}
 			}
@@ -375,34 +375,63 @@ public class Tree <T extends Comparable<T>>
 	
 	
 	public boolean esAtomico(Character l) {
-		
-		if (l == '~' || l == 'p' || l == 'q'|| l == '1' || l == '0') {
-			return true;
-		} else {
-			return false;
+		if (l!=null) {
+			if (l == 'p' || l == 'q'|| l == 'r'||  l == '1' || l == '0') {
+				return true;
+			} 	
 		}
+		return false;
+		
 	}
 
 	public  T evaluarInPreOrder(Nodo<T> n,HashMap<Character,Character> valores) {
 		if (n == null) {
 			return null;
 		} else {
-			if (n.getIzquierdo().getIzquierdo()!=null) {
-				//System.out.println("Entro a izq"+n.getIzquierdo().getElemento());
-				evaluarInPreOrder(n.getIzquierdo(),valores);	
+			if (n.getIzquierdo()!=null) {
+				//System.out.println("Entro a izq "+n.getIzquierdo().getElemento());
+				if ((char)n.getIzquierdo().getElemento()=='~') {
+					if (esAtomico((char)n.getIzquierdo().getIzquierdo().getElemento())) {
+						if (n.getIzquierdo().getIzquierdo().getValor()=='1') {
+							n.getIzquierdo().setValor('0');	
+						}else {
+							n.getIzquierdo().setValor('1');
+						}
+					}else {
+						evaluarInPreOrder(n.getIzquierdo().getIzquierdo(),valores);
+					}
+				}else if (!esAtomico((char)n.getIzquierdo().getElemento())) {
+					evaluarInPreOrder(n.getIzquierdo(),valores);
+				}
 			}
-			if (n.getDerecho().getDerecho()!=null) {
+			if (n.getDerecho()!=null) {
 				//System.out.println("Entro a derecho "+n.getDerecho().getElemento());
-				evaluarInPreOrder(n.getDerecho(), valores);	
+				if ( (char)n.getElemento()=='~'){
+					if (esAtomico((char)n.getDerecho().getElemento()) ) {
+						if (n.getDerecho().getDerecho().getValor()=='1') {
+							n.getDerecho().setValor('0');	
+						}else {
+							n.getDerecho().setValor('1');
+						}		
+					}else {
+						evaluarInPreOrder(n.getDerecho().getDerecho(), valores);	
+					}
+				}else if(!esAtomico((char)n.getDerecho().getElemento())){
+					evaluarInPreOrder(n.getDerecho(), valores);
+				}
+					
 			}
 			//System.out.println("Va a empezar a verificar "+n.getElemento());
+			
+			
 			Character izq = n.getIzquierdo().getValor();
-			Character der = n.getDerecho().getValor();
+			Character der = n.getDerecho().getValor();	
+		
 			
 			//System.err.println(izq+" izq ");
 			//System.err.println(der+" der ");
 			
-			if (esAtomico(izq) || esAtomico(der) ) {
+			if (esAtomico(izq)|| esAtomico(der)) {
 				if (n.getElemento().equals('^')) {
 					//System.out.println("paso el if ^");
 					if (izq.equals('1') && der.equals('1')) {
@@ -421,6 +450,24 @@ public class Tree <T extends Comparable<T>>
 						n.setValor('0');
 						//System.out.println("Va a setear "+n.getValor()+" por 1");
 					}
+				}else if (n.getElemento().equals('e')) {
+					//System.out.println("paso el if v");
+					if (izq.equals('0') && der.equals('1')) {
+						n.setValor('0');
+						//System.out.println("Va a setear "+n.getValor()+" por 1");
+					}else {
+						n.setValor('1');
+						//System.out.println("Va a setear "+n.getValor()+" por 1");
+					}
+				}else if (n.getElemento().equals('s')) {
+					//System.out.println("paso el if v");
+					if (izq.equals('1') && der.equals('1') || izq.equals('0') && der.equals('0')) {
+						n.setValor('1');
+						//System.out.println("Va a setear "+n.getValor()+" por 1");
+					}else {
+						n.setValor('0');
+						//System.out.println("Va a setear "+n.getValor()+" por 1");
+					}
 				}
 			}
 						
@@ -433,7 +480,7 @@ public class Tree <T extends Comparable<T>>
 			return;
 		} else {
 			imprimirInOrder(n.getIzquierdo());
-			System.out.println(n.getElemento());
+			//System.out.println(n.getElemento());
 			imprimirInOrder(n.getDerecho());
 		}
 	}
@@ -466,11 +513,16 @@ public class Tree <T extends Comparable<T>>
 				espacio+=" ";
 			}
 			
-			//System.out.println(espacio+n.getElemento());
+			////System.out.println(espacio+n.getElemento());
 			imprimirArbolHorizontal(n.getIzquierdo());
 		}
 		
 	}
+
+
+
+
+	
 
 
 	
