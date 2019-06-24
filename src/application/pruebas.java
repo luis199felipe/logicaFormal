@@ -14,28 +14,28 @@ public class pruebas {
 		// evaluarFormula("((p)e(q))^((q)e(r))", 3); // Aqui van la expresion y el
 		// numero de atomicos
 
-//		HashMap<Character,Character> valores = new HashMap<>();
-//		valores.put('p', '0');
-//		valores.put('q', '0');
-//		valores.put('1','1');
-//		valores.put('0','0');
-//		String exp = "(~(p))^((q)v(p))";
-//		Tree<Character> arbol = verificarFormulaBienFormada(exp, 2);
-//		arbol.setValorHojas(arbol.getRaiz(), 0, valores);		
-//		arbol.evaluarInPreOrder(arbol.getRaiz(),valores);
-//		System.out.println(arbol.getRaiz().getValor());
+		HashMap<Character,Character> valores = new HashMap<>();
+		valores.put('p', '0');
+		valores.put('q', '1');
+		valores.put('1','1');
+		valores.put('0','0');
+		String exp = "~((p)^(q))";
+		Tree<Character> arbol = verificarFormulaBienFormada(exp, 2);
+		arbol.setValorHojas(arbol.getRaiz(), 0, valores);		
+		arbol.evaluarInPreOrder(arbol.getRaiz(),valores);
+		System.out.println(arbol.getRaiz().getValor());
 
 		
 		//Ejemplo de consecuencia logica valida
-		ArrayList<String> formulas = new ArrayList<>();
-		String exp1 = "(p)^(q)";
-		String conclusion = "(p)v(q)";
-
-		formulas.add(exp1);
-		formulas.add(conclusion);
-		
-		boolean validez = verificarValidezConjuntoFormulas(formulas, 2);
-		System.out.println(validez);
+//		ArrayList<String> formulas = new ArrayList<>();
+//		String exp1 = "(p)^(q)";
+//		String conclusion = "(p)v(q)";
+//
+//		formulas.add(exp1);
+//		formulas.add(conclusion);
+//		
+//		boolean validez = verificarValidezConjuntoFormulas(formulas, 2);
+//		System.out.println(validez);
 	}
 
 	private static boolean verificarValidezConjuntoFormulas(ArrayList<String> formulas, int atomicosIntroducidos) {
@@ -43,7 +43,7 @@ public class pruebas {
 		char[][] matriz = new char[formulas.size()][(int) Math.pow(2, formulas.size())];
 
 		for (int i = 0; i < formulas.size(); i++) {
-			System.out.println("Formula " + i);
+			//System.out.println("Formula " + i);
 			matriz[i] = evaluarFormula(formulas.get(i), atomicosIntroducidos);
 		}
 
@@ -81,7 +81,7 @@ public class pruebas {
 			arbol.setValorHojas(arbol.getRaiz(), 0, valores);
 			arbol.evaluarInPreOrder(arbol.getRaiz(), valores);
 			result[i] = arbol.getRaiz().getValor();
-			System.out.println(i + " " + result[i]);
+			//System.out.println(i + " " + result[i]);
 		}
 
 		return result;
@@ -95,10 +95,11 @@ public class pruebas {
 		if (binario.length() < atomicosIntroducidos) {
 
 			for (int i = 0; i < atomicosIntroducidos - tamano; i++) {
-
 				binario = "0" + binario;
 			}
 		}
+		
+		System.out.println(binario);
 
 		for (int i = 0; i < atomicosIntroducidos; i++) {
 			char a = (char) (112 + i);
@@ -126,18 +127,37 @@ public class pruebas {
 			return false;
 		}
 	}
-
-	private static Character crearArbol(Tree<Character> arbol, String exp) {
+	
+	
+	private static void crearArbol(Tree<Character> arbol, String exp) {
+		if (exp.charAt(0)=='~') {
+			
+			Tree<Character> subArbol = new Tree<>();
+			Nodo<Character> n = new Nodo<>('~');
+			subArbol.setRaiz(n);
+			
+			crearArbol2(arbol, exp.substring(2, exp.length() - 1));
+			subArbol.agregarOrdNodo(arbol.getRaiz(),1);
+			arbol.setRaiz(subArbol.getRaiz());
+		}else {
+			crearArbol2(arbol, exp);
+		}
+	}
+	
+	
+	private static void crearArbol2(Tree<Character> arbol, String exp) {
 
 		int contPar = 0;
 		char simbolo = 0;
 		boolean flag = true;
+		
 		for (int i = 0; i < exp.length() && flag; i++) {
 			char l = exp.charAt(i);
 			contPar += compararParentesis(l);
 			if (contPar == 0 && i > 0 && i + 1 < exp.length() - 1) {
-				if (arbol.estaVacio()) {
+				if (arbol.estaVacio() ) {
 					arbol.agregarIzq(exp.charAt(i + 1));
+
 				}
 				String exp1 = exp.substring(1, i);
 				String exp2 = exp.substring(i + 3, exp.length() - 1);
@@ -151,7 +171,7 @@ public class pruebas {
 						if (esAtomico(exp1.substring(2, exp1.length() - 1).charAt(0))) {
 							subArbol.agregarIzq(exp1.substring(2, exp1.length() - 1).charAt(0));
 						} else {
-							crearArbol(subArbol, exp1.substring(2, exp1.length() - 1));
+							crearArbol2(subArbol, exp1.substring(2, exp1.length() - 1));
 						}
 
 						arbol.agregarOrdNodo(subArbol.getRaiz(), -1);
@@ -161,7 +181,7 @@ public class pruebas {
 
 				} else {
 					Tree<Character> subArbol = new Tree<>();
-					crearArbol(subArbol, exp1);
+					crearArbol2(subArbol, exp1);
 					arbol.agregarOrdNodo(subArbol.getRaiz(), -1);
 				}
 
@@ -174,7 +194,7 @@ public class pruebas {
 						if (esAtomico(exp2.substring(2, exp2.length() - 1).charAt(0))) {
 							subArbol.agregarIzq(exp2.substring(2, exp2.length() - 1).charAt(0));
 						} else {
-							crearArbol(subArbol, exp2.substring(2, exp2.length() - 1));
+							crearArbol2(subArbol, exp2.substring(2, exp2.length() - 1));
 						}
 						arbol.agregarOrdNodo(subArbol.getRaiz(), -1);
 					} else {
@@ -183,14 +203,14 @@ public class pruebas {
 
 				} else {
 					Tree<Character> subArbol = new Tree<>();
-					crearArbol(subArbol, exp2);
+					crearArbol2(subArbol, exp2);
 					arbol.agregarOrdNodo(subArbol.getRaiz(), 1);
 				}
 
 				flag = false;
 			}
 		}
-		return simbolo;
+		
 
 	}
 

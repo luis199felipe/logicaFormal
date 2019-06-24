@@ -384,9 +384,34 @@ public class Tree <T extends Comparable<T>>
 		
 	}
 
-	public  T evaluarInPreOrder(Nodo<T> n,HashMap<Character,Character> valores) {
+	public void evaluarInPreOrder(Nodo<T> n,HashMap<Character,Character> valores) {
+		if ((char)n.getElemento()=='~') {
+			if (n.getDerecho()!=null) {
+				evaluarInPreOrder2(n.getDerecho(),valores);
+				if (n.getDerecho().getValor()=='1') {
+					n.setValor('0');	
+				}else {
+					n.setValor('1');
+				}	
+			}else {
+				evaluarInPreOrder2(n.getIzquierdo(),valores);
+				if (n.getIzquierdo().getValor()=='1') {
+					n.setValor('0');	
+				}else {
+					n.setValor('1');
+				}
+				
+			}
+		}else {
+			evaluarInPreOrder2(n,valores);
+		}
+		
+		
+	}
+	
+	public void evaluarInPreOrder2(Nodo<T> n,HashMap<Character,Character> valores) {
 		if (n == null) {
-			return null;
+			
 		} else {
 			if (n.getIzquierdo()!=null) {
 				//System.out.println("Entro a izq "+n.getIzquierdo().getElemento());
@@ -398,10 +423,10 @@ public class Tree <T extends Comparable<T>>
 							n.getIzquierdo().setValor('1');
 						}
 					}else {
-						evaluarInPreOrder(n.getIzquierdo().getIzquierdo(),valores);
+						evaluarInPreOrder2(n.getIzquierdo().getIzquierdo(),valores);
 					}
 				}else if (!esAtomico((char)n.getIzquierdo().getElemento())) {
-					evaluarInPreOrder(n.getIzquierdo(),valores);
+					evaluarInPreOrder2(n.getIzquierdo(),valores);
 				}
 			}
 			if (n.getDerecho()!=null) {
@@ -414,10 +439,10 @@ public class Tree <T extends Comparable<T>>
 							n.getDerecho().setValor('1');
 						}		
 					}else {
-						evaluarInPreOrder(n.getDerecho().getDerecho(), valores);	
+						evaluarInPreOrder2(n.getDerecho().getDerecho(), valores);	
 					}
 				}else if(!esAtomico((char)n.getDerecho().getElemento())){
-					evaluarInPreOrder(n.getDerecho(), valores);
+					evaluarInPreOrder2(n.getDerecho(), valores);
 				}
 					
 			}
@@ -470,8 +495,7 @@ public class Tree <T extends Comparable<T>>
 					}
 				}
 			}
-						
-			return n.getElemento();
+	
 		}
 	}
 	
