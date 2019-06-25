@@ -405,6 +405,7 @@ public class Tree <T extends Comparable<T>>
 		}else if(esAtomico((char)n.getElemento())) {
 			n.setValor(valores.get(n.getElemento()));
 		}else {
+			System.out.println();
 			evaluarInPreOrder2(n,valores);
 		}
 		
@@ -486,7 +487,7 @@ public class Tree <T extends Comparable<T>>
 						n.setValor('1');
 						//System.out.println("Va a setear "+n.getValor()+" por 1");
 					}
-				}else if (n.getElemento().equals('s')) {
+				}else if (n.getElemento().equals('y')) {
 					//System.out.println("paso el if v");
 					if (izq.equals('1') && der.equals('1') || izq.equals('0') && der.equals('0')) {
 						n.setValor('1');

@@ -485,13 +485,13 @@ public class ControladorVista {
 		for (int i = 0; i < premisas.size(); i++) {
 
 			String prem = premisas.get(i);
-			prem = prem.replace("<->", "s");
+			prem = prem.replace("<->", "y");
 			prem = prem.replace("->", "e");
 			premisasOperables.add(prem);
 
 		}
 
-		conclusion = conclusion.replace("<->", "s");
+		conclusion = conclusion.replace("<->", "y");
 		conclusion = conclusion.replace("->", "e");
 		premisasOperables.add(conclusion);
 
