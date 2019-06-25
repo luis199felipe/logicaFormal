@@ -387,14 +387,14 @@ public class Tree <T extends Comparable<T>>
 	public void evaluarInPreOrder(Nodo<T> n,HashMap<Character,Character> valores) {
 		if ((char)n.getElemento()=='~') {
 			if (n.getDerecho()!=null) {
-				evaluarInPreOrder2(n.getDerecho(),valores);
+				evaluarInPreOrder(n.getDerecho(),valores);
 				if (n.getDerecho().getValor()=='1') {
 					n.setValor('0');	
 				}else {
 					n.setValor('1');
 				}	
 			}else {
-				evaluarInPreOrder2(n.getIzquierdo(),valores);
+				evaluarInPreOrder(n.getIzquierdo(),valores);
 				if (n.getIzquierdo().getValor()=='1') {
 					n.setValor('0');	
 				}else {

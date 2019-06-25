@@ -115,11 +115,11 @@ public class Validador {
 
 			Tree<Character> subArbol = new Tree<>();
 			Nodo<Character> n = new Nodo<>('~');
-			subArbol.setRaiz(n);
+			arbol.setRaiz(n);
 
-			crearArbol2(arbol, exp.substring(2, exp.length() - 1));
-			subArbol.agregarOrdNodo(arbol.getRaiz(), 1);
-			arbol.setRaiz(subArbol.getRaiz());
+			crearArbol(subArbol, exp.substring(2, exp.length() - 1));
+			arbol.agregarOrdNodo(subArbol.getRaiz(), 1);
+			//arbol.setRaiz(subArbol.getRaiz());
 		}else if(esAtomico(exp.charAt(0))) {
 			Nodo<Character> n = new Nodo<Character>(exp.charAt(0));
 			arbol.setRaiz(n);
