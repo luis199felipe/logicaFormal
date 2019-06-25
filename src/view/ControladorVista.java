@@ -122,7 +122,6 @@ public class ControladorVista {
 	private ArrayList<String> premisas;
 	private ArrayList<String> premisasOperables;
 	private ArrayList<String> atomosTotales;
-	private int atomosParciales;
 	private ArrayList<TextField> premisasVisuales;
 	private String conclusion;
 	private int premisaAeliminar;
@@ -155,28 +154,36 @@ public class ControladorVista {
 	@FXML
 	public void guardarFormula(ActionEvent event) {
 
-		if (event.getSource().equals(botonGuardarPremisa)) {
+		if (!campoFormula.getText().isEmpty()) {
 
-			premisas.add(campoFormula.getText());
+			if (verificarFormulaBienFormada()) {
 
-		} else {
-			if (conclusion.isEmpty()) {
-				conclusion = campoFormula.getText();
+				if (event.getSource().equals(botonGuardarConclusion)) {
+					if (conclusion.isEmpty()) {
+						conclusion = campoFormula.getText();
 
-			} else {
-				Alert a = new Alert(AlertType.CONFIRMATION, "Desea sobreescribir la conclusion", ButtonType.NO,
-						ButtonType.YES);
-				a.showAndWait();
-				if (a.getResult().equals(ButtonType.YES)) {
-					conclusion = campoFormula.getText();
+					} else {
+						Alert a = new Alert(AlertType.CONFIRMATION, "Desea sobreescribir la conclusion", ButtonType.NO,
+								ButtonType.YES);
+						a.showAndWait();
+						if (a.getResult().equals(ButtonType.YES)) {
+							conclusion = campoFormula.getText();
+						}
+					}
+
+				} else {
+					premisas.add(campoFormula.getText());
 				}
 			}
+
+		} else {
+			Alert a = new Alert(AlertType.ERROR, "El campo  de la formula no debe estar vacio", ButtonType.OK);
+			a.showAndWait();
 		}
-		botonGuardarPremisa.setDisable(true);
-		botonGuardarConclusion.setDisable(true);
-		atomosParciales = 0;
+
 		campoFormula.clear();
 		actualizarFormaEstandar();
+
 	}
 
 	private void actualizarFormaEstandar() {
@@ -206,86 +213,124 @@ public class ControladorVista {
 	@FXML
 	public void insertarOperador(ActionEvent event) {
 
-		boolean flag = true;
-		if (campoFormula.getCaretPosition() != 0) {
-			int posSig = campoFormula.getCaretPosition() + 1;
-			int posAnt = campoFormula.getCaretPosition() - 1;
+		try {
+			boolean flag = true;
+			if (campoFormula.getCaretPosition() != 0 || !campoFormula.getText().isEmpty()) {
+				int posSig = campoFormula.getCaretPosition() + 1;
+				int posAnt = campoFormula.getCaretPosition() - 1;
 
-			if (!campoFormula.getText(posAnt, posSig).equals("()")) {
-				flag = false;
+				if (!campoFormula.getText(posAnt, posSig).equals("()")) {
+					flag = false;
+				}
 			}
-		}
-		if (flag) {
-			int op = 0;
-			if (event.getSource().equals(botonConjuncion)) {
-				op = 3;
+			if (flag) {
+				int op = 0;
+				if (event.getSource().equals(botonConjuncion)) {
+					op = 3;
 
-			} else if (event.getSource().equals(botonDisyuncion)) {
-				op = 4;
+				} else if (event.getSource().equals(botonDisyuncion)) {
+					op = 4;
 
-			} else if (event.getSource().equals(botonNegar)) {
-				op = 0;
+				} else if (event.getSource().equals(botonNegar)) {
+					op = 0;
 
-			} else if (event.getSource().equals(botonCondicional)) {
-				op = 1;
+				} else if (event.getSource().equals(botonCondicional)) {
+					op = 1;
 
-			} else if (event.getSource().equals(botonBicondicional)) {
-				op = 2;
+				} else if (event.getSource().equals(botonBicondicional)) {
+					op = 2;
 
+				}
+
+				String a = operadores.get(op);
+				int posCaretPreInsertion = campoFormula.getCaretPosition();
+				campoFormula.insertText(campoFormula.getCaretPosition(), a.split(",")[0] + "");
+
+				int posToMove = Integer.parseInt(a.split(",")[1]);
+				campoFormula.positionCaret(posCaretPreInsertion + posToMove);
+				campoFormula.requestFocus();
 			}
-
-			String a = operadores.get(op);
-			int posCaretPreInsertion = campoFormula.getCaretPosition();
-			campoFormula.insertText(campoFormula.getCaretPosition(), a.split(",")[0] + "");
-
-			int posToMove = Integer.parseInt(a.split(",")[1]);
-			campoFormula.positionCaret(posCaretPreInsertion + posToMove);
-			campoFormula.requestFocus();
+		} catch (Exception e) {
+			// TODO: handle exception
 		}
-
 	}
 
 	@FXML
 	public void insertarAtomo(ActionEvent event) {
+		String atomo = "";
 
 		try {
-			String atomo = "";
-			if (!campoFormula.getText().isEmpty()) {
+//			if (!campoFormula.getText().isEmpty()) {
 
-				int posSig = campoFormula.getCaretPosition() + 1;
-				int posAnt = campoFormula.getCaretPosition() - 1;
+			int posSig = campoFormula.getCaretPosition() + 1;
+			int posAnt = campoFormula.getCaretPosition() - 1;
+			if (event.getSource().equals(botonAtomoP)) {
+				atomo = "p";
 
-				if (campoFormula.getText(posAnt, posSig).equals("()")) {
+			} else if (event.getSource().equals(botonAtomoQ)) {
+				atomo = "q";
 
-					if (event.getSource().equals(botonAtomoP)) {
-						atomo = "p";
-					} else if (event.getSource().equals(botonAtomoQ)) {
-						atomo = "q";
+			} else if (event.getSource().equals(botonAtomoR)) {
+				atomo = "r";
 
-					} else if (event.getSource().equals(botonAtomoR)) {
-						atomo = "r";
+			} else if (event.getSource().equals(botonAtomoS)) {
+				atomo = "s";
 
-					} else if (event.getSource().equals(botonAtomoS)) {
-						atomo = "s";
+			} else if (event.getSource().equals(botonAtomoU)) {
+				atomo = "u";
+				botonAtomoU.setDisable(false);
 
-					} else if (event.getSource().equals(botonAtomoU)) {
-						atomo = "u";
+			} else if (event.getSource().equals(botonAtomoT)) {
+				atomo = "t";
 
-					} else if (event.getSource().equals(botonAtomoT)) {
-						atomo = "t";
+			}
+			if (campoFormula.getText(posAnt, posSig).equals("()")) {
 
-					}
-					atomosParciales++;
-					if (!atomosTotales.contains(atomo)) {
-						atomosTotales.add(atomo);
-					}
-					campoFormula.insertText(campoFormula.getCaretPosition(), atomo + "");
-				} else {
+				if (!atomosTotales.contains(atomo)) {
+					atomosTotales.add(atomo);
+					desbloquearBoton(atomo);
+				}
+				campoFormula.insertText(campoFormula.getCaretPosition(), atomo + "");
+			}
+//			}
+		} catch (IndexOutOfBoundsException e) {
+			if (campoFormula.getText().isEmpty()) {
+				campoFormula.setText(atomo);
+				if (!atomosTotales.contains(atomo)) {
+					atomosTotales.add(atomo);
+					desbloquearBoton(atomo);
 
 				}
 			}
-		} catch (IndexOutOfBoundsException e) {
 
+		}
+
+	}
+
+	private void desbloquearBoton(String a) {
+		switch (a) {
+		case "p":
+			botonAtomoQ.setDisable(false);
+			break;
+		case "q":
+			botonAtomoR.setDisable(false);
+
+			break;
+		case "r":
+			botonAtomoS.setDisable(false);
+
+			break;
+		case "s":
+			botonAtomoT.setDisable(false);
+
+			break;
+		case "t":
+			botonAtomoU.setDisable(false);
+
+			break;
+
+		default:
+			break;
 		}
 	}
 
@@ -312,7 +357,6 @@ public class ControladorVista {
 	@FXML
 	public void eliminarAtomo() {
 		campoFormula.setText("");
-		atomosParciales = 0;
 		botonGuardarPremisa.setDisable(true);
 		botonGuardarConclusion.setDisable(true);
 
@@ -393,9 +437,8 @@ public class ControladorVista {
 		actualizarFormaEstandar();
 		separadorConclusion.setVisible(false);
 		campoConclusion.setVisible(false);
-		atomosParciales = 0;
 		atomosTotales.clear();
-		
+
 	}
 
 	private EventHandler<KeyEvent> filter = new EventHandler<KeyEvent>() {
@@ -419,55 +462,50 @@ public class ControladorVista {
 	/*
 	 * Aqui inicia la parte de validacion de fbf y consecuencia logica
 	 */
-	@FXML
-	public void verificarFBF() {
 
-		if (!campoFormula.getText().isEmpty()) {
+	private boolean verificarFormulaBienFormada() {
 
-			try {
-				validador.verificarFormulaBienFormada(campoFormula.getText(), atomosParciales);
+		String f = campoFormula.getText();
+		for (int i = 0; i < f.length(); i++) {
 
-				botonGuardarPremisa.setDisable(false);
-				botonGuardarConclusion.setDisable(false);
-
-			} catch (Exception e) {
-
+			if (i + 2 < f.length()) {
+//				if ((f.charAt(i) + "").equals("(")&&) {
+//
+//				}
 			}
-		} else {
-			Alert a = new Alert(AlertType.ERROR, "El campo  de la formula no debe estar vacio", ButtonType.OK);
-			a.showAndWait();
+
 		}
+		return true;
 
 	}
 
 	@FXML
 	public void verificarValidez() {
 
-//		for (int i = 0; i < premisas.size(); i++) {
-//
-//			String prem = premisas.get(i);
-//			prem = prem.replace("<->", "s");
-//			prem = prem.replace("->", "e");
-//			premisasOperables.add(prem);
-//
-//		}
-//
-//		conclusion = conclusion.replace("<->", "s");
-//		conclusion = conclusion.replace("->", "e");
-//		premisasOperables.add(conclusion);
+		for (int i = 0; i < premisas.size(); i++) {
 
-		
-		
-		premisasOperables.add("(p)e(q)");
-		premisasOperables.add("p");
-		premisasOperables.add("q");
+			String prem = premisas.get(i);
+			prem = prem.replace("<->", "s");
+			prem = prem.replace("->", "e");
+			premisasOperables.add(prem);
 
-		boolean validez = validador.verificarValidezConjuntoFormulas(premisasOperables, 2);
+		}
+
+		conclusion = conclusion.replace("<->", "s");
+		conclusion = conclusion.replace("->", "e");
+		premisasOperables.add(conclusion);
+
+//		premisasOperables.add("(p)e(q)");
+//		premisasOperables.add("p");
+//		premisasOperables.add("q");
+
+		System.out.println("Numero de  atomos" + atomosTotales.size());
+		boolean validez = validador.verificarValidezConjuntoFormulas(premisasOperables, atomosTotales.size());
 		System.err.println(validez);
-		//cargarTabla(validador.getResultados());
-		//validador.limpiarResultados();
+		cargarTabla(validador.getResultados());
+		validador.limpiarResultados();
 
-		//mostrarConclusion(validez);
+		mostrarConclusion(validez);
 
 	}
 
@@ -476,8 +514,8 @@ public class ControladorVista {
 			campoConclusionFinal
 					.setText("EL argumento es valido, ya que la conclusion es consecuencia logica de las premsias");
 		} else {
-			campoConclusionFinal
-			.setText("EL argumento  NO es valido, ya que la conclusion  NO es consecuencia logica de las premsias");
+			campoConclusionFinal.setText(
+					"EL argumento  NO es valido, ya que la conclusion  NO es consecuencia logica de las premsias");
 		}
 
 	}
@@ -485,7 +523,7 @@ public class ControladorVista {
 	private void cargarTabla(ArrayList<char[]> resultados) {
 
 		ObservableList<StringProperty> x = FXCollections.observableArrayList();
-		for (int i = 0; i < (int) Math.pow(2, 2); i++) {
+		for (int i = 0; i < (int) Math.pow(2, atomosTotales.size()); i++) {
 
 			String a = "";
 			for (int j = 0; j < resultados.size(); j++) {

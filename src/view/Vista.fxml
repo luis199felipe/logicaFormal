@@ -84,12 +84,12 @@
                                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                       </rowConstraints>
                                        <children>
-                                          <Button fx:id="botonAtomoU" mnemonicParsing="false" onAction="#insertarAtomo" text="u" />
-                                          <Button fx:id="botonAtomoP" mnemonicParsing="false" onAction="#insertarAtomo" text="p" GridPane.columnIndex="1" />
-                                          <Button fx:id="botonAtomoQ" mnemonicParsing="false" onAction="#insertarAtomo" text="q" GridPane.rowIndex="1" />
-                                          <Button fx:id="botonAtomoR" mnemonicParsing="false" onAction="#insertarAtomo" text="r" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                          <Button fx:id="botonAtomoS" mnemonicParsing="false" onAction="#insertarAtomo" text="s" GridPane.rowIndex="2" />
-                                          <Button fx:id="botonAtomoT" mnemonicParsing="false" onAction="#insertarAtomo" text="t" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                          <Button fx:id="botonAtomoU" disable="true" mnemonicParsing="false" onAction="#insertarAtomo" text="u" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                          <Button fx:id="botonAtomoQ" disable="true" mnemonicParsing="false" onAction="#insertarAtomo" text="q" GridPane.columnIndex="1" />
+                                          <Button fx:id="botonAtomoR" disable="true" mnemonicParsing="false" onAction="#insertarAtomo" text="r" GridPane.rowIndex="1" />
+                                          <Button fx:id="botonAtomoT" disable="true" mnemonicParsing="false" onAction="#insertarAtomo" text="t" GridPane.rowIndex="2" />
+                                          <Button fx:id="botonAtomoP" mnemonicParsing="false" onAction="#insertarAtomo" text="p" />
+                                          <Button fx:id="botonAtomoS" disable="true" mnemonicParsing="false" onAction="#insertarAtomo" text="s" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                                        </children>
                                     </GridPane>
                                  </children>
@@ -97,61 +97,35 @@
                            </content>
                         </TitledPane>
                         <BorderPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
-                           <center>
+                           <top>
                               <GridPane BorderPane.alignment="CENTER">
                                 <columnConstraints>
-                                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="260.0" minWidth="10.0" prefWidth="229.0" />
-                                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="299.0" minWidth="10.0" prefWidth="264.0" />
-                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="261.0" minWidth="10.0" prefWidth="54.0" />
+                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="150.0" minWidth="10.0" prefWidth="139.0" />
+                                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="225.0" minWidth="10.0" prefWidth="147.0" />
+                                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="181.0" minWidth="10.0" prefWidth="179.0" />
                                 </columnConstraints>
                                 <rowConstraints>
                                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                 </rowConstraints>
                                  <children>
+                                    <Button fx:id="botonEliminarAtomo" mnemonicParsing="false" onAction="#eliminarAtomo" text="Eliminar" GridPane.columnIndex="2" />
                                     <BorderPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1">
+                                       <left>
+                                          <Button fx:id="botonAnt" mnemonicParsing="false" onAction="#moverCaret" text="&lt;" BorderPane.alignment="CENTER" />
+                                       </left>
                                        <center>
-                                          <GridPane BorderPane.alignment="CENTER">
-                                            <columnConstraints>
-                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="72.0" minWidth="10.0" prefWidth="48.0" />
-                                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="72.0" minWidth="10.0" prefWidth="47.0" />
-                                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="108.0" minWidth="10.0" prefWidth="65.0" />
-                                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                                            </columnConstraints>
-                                            <rowConstraints>
-                                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                            </rowConstraints>
-                                             <children>
-                                                <Button fx:id="botonAnt" mnemonicParsing="false" onAction="#moverCaret" text="&lt;" GridPane.columnIndex="1" />
-                                                <Button fx:id="botonEliminarAtomo" mnemonicParsing="false" onAction="#eliminarAtomo" text="Eliminar" GridPane.columnIndex="3" />
-                                                <Button fx:id="botonSig" mnemonicParsing="false" onAction="#moverCaret" text="&gt;" GridPane.columnIndex="2" />
-                                             </children>
-                                          </GridPane>
-                                       </center>
-                                    </BorderPane>
-                                    <BorderPane prefHeight="200.0" prefWidth="200.0">
-                                       <center>
-                                          <Button fx:id="botonGuardarPremisa" disable="true" mnemonicParsing="false" onAction="#guardarFormula" prefHeight="25.0" prefWidth="151.0" text="Guardar como premisa" BorderPane.alignment="CENTER" />
-                                       </center>
-                                    </BorderPane>
-                                    <BorderPane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1">
-                                       <center>
-                                          <Button fx:id="botonGuardarConclusion" disable="true" mnemonicParsing="false" onAction="#guardarFormula" text="Guardar como conclusion" BorderPane.alignment="CENTER" />
-                                       </center>
-                                    </BorderPane>
-                                    <BorderPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
-                                       <center>
-                                          <Button fx:id="botonVerificarFBF" mnemonicParsing="false" onAction="#verificarFBF" prefHeight="25.0" prefWidth="101.0" text="Verificar  FBF" BorderPane.alignment="CENTER">
-                                             <effect>
-                                                <DropShadow color="RED" />
-                                             </effect>
-                                          </Button>
+                                          <Button fx:id="botonSig" mnemonicParsing="false" onAction="#moverCaret" text="&gt;" BorderPane.alignment="CENTER" />
                                        </center>
                                     </BorderPane>
                                  </children>
                               </GridPane>
-                           </center>
+                           </top>
+                           <right>
+                              <Button fx:id="botonGuardarConclusion" mnemonicParsing="false" onAction="#guardarFormula" text="Guardar como conclusion" BorderPane.alignment="CENTER" />
+                           </right>
+                           <left>
+                              <Button fx:id="botonGuardarPremisa" mnemonicParsing="false" onAction="#guardarFormula" prefHeight="25.0" prefWidth="151.0" text="Guardar como premisa" BorderPane.alignment="CENTER" />
+                           </left>
                         </BorderPane>
                         <TextArea fx:id="campoConclusionFinal" editable="false" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="6" />
                         <BorderPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="5">
@@ -201,7 +175,7 @@
                                                 </Lighting>
                                              </effect>
                                           </Separator>
-                                          <TextField fx:id="campoConclusion" alignment="TOP_CENTER" editable="false" promptText="Conclusion" visible="false" />
+                                          <TextField fx:id="campoConclusion" alignment="TOP_CENTER" editable="false" promptText="Conclusion" />
                                        </children></VBox>
                                  </center>
                               </BorderPane>
