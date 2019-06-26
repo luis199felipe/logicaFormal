@@ -29,13 +29,13 @@ public class Validador {
 		for (int i = 0; i < formulas.size(); i++) {
 			System.out.println("Formula " + i);
 			matriz[i] = evaluarFormula(formulas.get(i), atomicosIntroducidos);
-			//System.out.println(matriz[i].toString());
+			// System.out.println(matriz[i].toString());
 		}
 
 		for (int j = 0; j < matriz[0].length; j++) {
 			boolean InterpValida = true;
 			for (int i = 0; i < matriz.length && InterpValida; i++) {
-				 System.out.println(i + " " + j + " " + matriz[i][j]);
+				System.out.println(i + " " + j + " " + matriz[i][j]);
 				if (matriz[i][j] == '1') {
 					if (j == matriz[0].length - 1) {
 						return true;
@@ -82,7 +82,7 @@ public class Validador {
 			}
 		}
 
-		//System.out.println(binario);
+		// System.out.println(binario);
 
 		for (int i = 0; i < atomicosIntroducidos; i++) {
 			char a = (char) (112 + i);
@@ -95,10 +95,8 @@ public class Validador {
 	public Tree<Character> verificarFormulaBienFormada(String exp, int atomicosIntroducidos) {
 		Tree<Character> arbol = new Tree<>();
 		crearArbol(arbol, exp);
-
-	
 		return arbol;
-	
+
 	}
 
 	public static boolean esAtomico(char l) {
@@ -111,7 +109,7 @@ public class Validador {
 	}
 
 	private void crearArbol(Tree<Character> arbol, String exp) {
-		if (exp.charAt(0) == '~' ) {
+		if (exp.charAt(0) == '~') {
 
 			Tree<Character> subArbol = new Tree<>();
 			Nodo<Character> n = new Nodo<>('~');
@@ -119,11 +117,11 @@ public class Validador {
 
 			crearArbol(subArbol, exp.substring(2, exp.length() - 1));
 			arbol.agregarOrdNodo(subArbol.getRaiz(), 1);
-			//arbol.setRaiz(subArbol.getRaiz());
-		}else if(esAtomico(exp.charAt(0))) {
+			// arbol.setRaiz(subArbol.getRaiz());
+		} else if (esAtomico(exp.charAt(0))) {
 			Nodo<Character> n = new Nodo<Character>(exp.charAt(0));
 			arbol.setRaiz(n);
-		}else {
+		} else {
 			crearArbol2(arbol, exp);
 		}
 	}
@@ -147,17 +145,32 @@ public class Validador {
 
 				if (esAtomico(exp1.charAt(0)) || exp1.charAt(0) == '~') {
 					if (exp1.charAt(0) == '~') {
-						Tree<Character> subArbol = new Tree<>();
-						Nodo<Character> n = new Nodo<>('~');
-						subArbol.setRaiz(n);
-						// System.out.println("Va a crear "+exp1.substring(2,exp1.length() - 1));
-						if (esAtomico(exp1.substring(2, exp1.length() - 1).charAt(0))) {
-							subArbol.agregarIzq(exp1.substring(2, exp1.length() - 1).charAt(0));
+						if (exp1.charAt(2) == '~') {
+							
+							Tree<Character> subArbol = new Tree<>();
+							
+							System.out.println("Va a crear "+exp1.substring(4,exp1.length() - 2));
+							if (esAtomico(exp1.substring(4, exp1.length() - 2).charAt(0))) {
+								subArbol.agregarIzq(exp1.substring(4, exp1.length() - 2).charAt(0));
+							} else {
+								crearArbol2(subArbol, exp1.substring(2, exp1.length() - 1));
+							}
+
+							arbol.agregarOrdNodo(subArbol.getRaiz(), -1);
 						} else {
-							crearArbol2(subArbol, exp1.substring(2, exp1.length() - 1));
+							Tree<Character> subArbol = new Tree<>();
+							Nodo<Character> n = new Nodo<>('~');
+							subArbol.setRaiz(n);
+							// System.out.println("Va a crear "+exp1.substring(2,exp1.length() - 1));
+							if (esAtomico(exp1.substring(2, exp1.length() - 1).charAt(0))) {
+								subArbol.agregarIzq(exp1.substring(2, exp1.length() - 1).charAt(0));
+							} else {
+								crearArbol2(subArbol, exp1.substring(2, exp1.length() - 1));
+							}
+
+							arbol.agregarOrdNodo(subArbol.getRaiz(), -1);
 						}
 
-						arbol.agregarOrdNodo(subArbol.getRaiz(), -1);
 					} else {
 						arbol.agregarOrd(exp1.charAt(0), -1);
 					}
@@ -170,16 +183,28 @@ public class Validador {
 
 				if (esAtomico(exp2.charAt(0)) || exp2.charAt(0) == '~') {
 					if (exp2.charAt(0) == '~') {
-						Tree<Character> subArbol = new Tree<>();
-						Nodo<Character> n = new Nodo<>('~');
-						subArbol.setRaiz(n);
-						// System.out.println("Va a crear "+exp2.substring(2,exp1.length() - 1));
-						if (esAtomico(exp2.substring(2, exp2.length() - 1).charAt(0))) {
-							subArbol.agregarIzq(exp2.substring(2, exp2.length() - 1).charAt(0));
+						if (exp2.charAt(2) == '~') {
+							Tree<Character> subArbol = new Tree<>();
+							
+							System.out.println("Va a crear 22"+exp2.substring(3,exp2.length() - 2));
+							if (esAtomico(exp2.substring(3, exp2.length() - 2).charAt(0))) {
+								subArbol.agregarIzq(exp1.substring(2, exp2.length() - 2).charAt(0));
+							} else {
+								crearArbol2(subArbol, exp2.substring(2, exp2.length() - 1));
+							}
 						} else {
-							crearArbol2(subArbol, exp2.substring(2, exp2.length() - 1));
+							Tree<Character> subArbol = new Tree<>();
+							Nodo<Character> n = new Nodo<>('~');
+							subArbol.setRaiz(n);
+							// System.out.println("Va a crear "+exp2.substring(2,exp1.length() - 1));
+							if (esAtomico(exp2.substring(2, exp2.length() - 1).charAt(0))) {
+								subArbol.agregarIzq(exp2.substring(2, exp2.length() - 1).charAt(0));
+							} else {
+								crearArbol2(subArbol, exp2.substring(2, exp2.length() - 1));
+							}
+							arbol.agregarOrdNodo(subArbol.getRaiz(), -1);
 						}
-						arbol.agregarOrdNodo(subArbol.getRaiz(), -1);
+
 					} else {
 						arbol.agregarOrd(exp2.charAt(0), 1);
 					}
@@ -207,6 +232,6 @@ public class Validador {
 
 	public void limpiarResultados() {
 		resultados.clear();
-		
+
 	}
 }
