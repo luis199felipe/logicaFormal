@@ -1,5 +1,9 @@
 package view;
 
+import java.awt.Desktop;
+import java.awt.Toolkit;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import java.util.HashMap;
@@ -151,12 +155,18 @@ public class ControladorVista {
 		validador = new Validador();
 	}
 
+	/**
+	 * 
+	 * @param event
+	 */
 	@FXML
 	public void guardarFormula(ActionEvent event) {
 
 		if (!campoFormula.getText().isEmpty()) {
 
 			if (verificarFormulaBienFormada()) {
+
+				insertarAtomos();
 
 				if (event.getSource().equals(botonGuardarConclusion)) {
 					if (conclusion.isEmpty()) {
@@ -174,6 +184,14 @@ public class ControladorVista {
 				} else {
 					premisas.add(campoFormula.getText());
 				}
+				campoFormula.clear();
+//				tablaVerificacionValidez.getColumns().clear();	
+//				validador.limpiarResultados();
+
+				actualizarFormaEstandar();
+			} else {
+				Alert a = new Alert(AlertType.ERROR, "La formula no esta bien formada", ButtonType.OK);
+				a.showAndWait();
 			}
 
 		} else {
@@ -181,10 +199,35 @@ public class ControladorVista {
 			a.showAndWait();
 		}
 
-		campoFormula.clear();
-		actualizarFormaEstandar();
+	}
+
+	private void insertarAtomos() {
+
+		String ex = campoFormula.getText();
+		for (int i = 0; i < ex.length(); i++) {
+			String a = "";
+			if ((ex.charAt(i) + "").equals("p") || (ex.charAt(i) + "").equals("q") || (ex.charAt(i) + "").equals("r")
+					|| (ex.charAt(i) + "").equals("s") || (ex.charAt(i) + "").equals("t")
+					|| (ex.charAt(i) + "").equals("u")) {
+				a = ex.charAt(i) + "";
+
+			}
+
+			if (!a.isEmpty() && !atomosTotales.contains(a)) {
+				System.out.println("EB");
+				atomosTotales.add(a);
+			}
+		}
+		for (int i = 0; i < atomosTotales.size(); i++) {
+
+			System.out.println(atomosTotales.get(i));
+		}
 
 	}
+
+	/**
+	 * 
+	 */
 
 	private void actualizarFormaEstandar() {
 		campoConclusion.setText(conclusion);
@@ -210,103 +253,124 @@ public class ControladorVista {
 
 	}
 
+	/**
+	 * 
+	 * @param event
+	 */
 	@FXML
 	public void insertarOperador(ActionEvent event) {
 
-		try {
-			boolean flag = true;
-			if (campoFormula.getCaretPosition() != 0 || !campoFormula.getText().isEmpty()) {
-				int posSig = campoFormula.getCaretPosition() + 1;
-				int posAnt = campoFormula.getCaretPosition() - 1;
+		if (campoFormula.isDisabled() == false) {
+			try {
+				boolean flag = true;
+				if (campoFormula.getCaretPosition() != 0 || !campoFormula.getText().isEmpty()) {
+					int posSig = campoFormula.getCaretPosition() + 1;
+					int posAnt = campoFormula.getCaretPosition() - 1;
 
-				if (!campoFormula.getText(posAnt, posSig).equals("()")) {
-					flag = false;
+					if (!campoFormula.getText(posAnt, posSig).equals("()")) {
+						flag = false;
+					}
 				}
-			}
-			if (flag) {
-				int op = 0;
-				if (event.getSource().equals(botonConjuncion)) {
-					op = 3;
+				if (flag) {
+					int op = 0;
+					if (event.getSource().equals(botonConjuncion)) {
+						op = 3;
 
-				} else if (event.getSource().equals(botonDisyuncion)) {
-					op = 4;
+					} else if (event.getSource().equals(botonDisyuncion)) {
+						op = 4;
 
-				} else if (event.getSource().equals(botonNegar)) {
-					op = 0;
+					} else if (event.getSource().equals(botonNegar)) {
+						op = 0;
 
-				} else if (event.getSource().equals(botonCondicional)) {
-					op = 1;
+					} else if (event.getSource().equals(botonCondicional)) {
+						op = 1;
 
-				} else if (event.getSource().equals(botonBicondicional)) {
-					op = 2;
+					} else if (event.getSource().equals(botonBicondicional)) {
+						op = 2;
 
+					}
+
+					String a = operadores.get(op);
+					int posCaretPreInsertion = campoFormula.getCaretPosition();
+					campoFormula.insertText(campoFormula.getCaretPosition(), a.split(",")[0] + "");
+
+					int posToMove = Integer.parseInt(a.split(",")[1]);
+					campoFormula.positionCaret(posCaretPreInsertion + posToMove);
+					campoFormula.requestFocus();
 				}
-
-				String a = operadores.get(op);
-				int posCaretPreInsertion = campoFormula.getCaretPosition();
-				campoFormula.insertText(campoFormula.getCaretPosition(), a.split(",")[0] + "");
-
-				int posToMove = Integer.parseInt(a.split(",")[1]);
-				campoFormula.positionCaret(posCaretPreInsertion + posToMove);
-				campoFormula.requestFocus();
+			} catch (Exception e) {
+				// TODO: handle exception
 			}
-		} catch (Exception e) {
-			// TODO: handle exception
+		} else {
+			Alert a = new Alert(AlertType.ERROR,
+					"Debe Limpiar todo para ingresar un nuevo argumento (Opciones/limpiar)", ButtonType.OK);
+			a.showAndWait();
 		}
 	}
 
+	/**
+	 * 
+	 * @param event
+	 */
 	@FXML
 	public void insertarAtomo(ActionEvent event) {
 		String atomo = "";
 
-		try {
-//			if (!campoFormula.getText().isEmpty()) {
+		if (campoFormula.isDisabled() == false) {
+			try {
 
-			int posSig = campoFormula.getCaretPosition() + 1;
-			int posAnt = campoFormula.getCaretPosition() - 1;
-			if (event.getSource().equals(botonAtomoP)) {
-				atomo = "p";
+				int posSig = campoFormula.getCaretPosition() + 1;
+				int posAnt = campoFormula.getCaretPosition() - 1;
+				if (event.getSource().equals(botonAtomoP)) {
+					atomo = "p";
 
-			} else if (event.getSource().equals(botonAtomoQ)) {
-				atomo = "q";
+				} else if (event.getSource().equals(botonAtomoQ)) {
+					atomo = "q";
 
-			} else if (event.getSource().equals(botonAtomoR)) {
-				atomo = "r";
+				} else if (event.getSource().equals(botonAtomoR)) {
+					atomo = "r";
 
-			} else if (event.getSource().equals(botonAtomoS)) {
-				atomo = "s";
+				} else if (event.getSource().equals(botonAtomoS)) {
+					atomo = "s";
 
-			} else if (event.getSource().equals(botonAtomoU)) {
-				atomo = "u";
-				botonAtomoU.setDisable(false);
+				} else if (event.getSource().equals(botonAtomoU)) {
+					atomo = "u";
 
-			} else if (event.getSource().equals(botonAtomoT)) {
-				atomo = "t";
-
-			}
-			if (campoFormula.getText(posAnt, posSig).equals("()")) {
-
-				if (!atomosTotales.contains(atomo)) {
-					atomosTotales.add(atomo);
-					desbloquearBoton(atomo);
-				}
-				campoFormula.insertText(campoFormula.getCaretPosition(), atomo + "");
-			}
-//			}
-		} catch (IndexOutOfBoundsException e) {
-			if (campoFormula.getText().isEmpty()) {
-				campoFormula.setText(atomo);
-				if (!atomosTotales.contains(atomo)) {
-					atomosTotales.add(atomo);
-					desbloquearBoton(atomo);
+				} else if (event.getSource().equals(botonAtomoT)) {
+					atomo = "t";
 
 				}
-			}
+				if (campoFormula.getText(posAnt, posSig).equals("()")) {
 
+					if (!atomosTotales.contains(atomo)) {
+//					atomosTotales.add(atomo);
+						desbloquearBoton(atomo);
+					}
+					campoFormula.insertText(campoFormula.getCaretPosition(), atomo + "");
+				}
+			} catch (IndexOutOfBoundsException e) {
+				if (campoFormula.getText().isEmpty()) {
+					campoFormula.setText(atomo);
+					if (!atomosTotales.contains(atomo)) {
+//					atomosTotales.add(atomo);
+						desbloquearBoton(atomo);
+
+					}
+				}
+
+			}
+		} else {
+			Alert a = new Alert(AlertType.ERROR,
+					"Debe Limpiar todo para ingresar un nuevo argumento (Opciones/limpiar)", ButtonType.OK);
+			a.showAndWait();
 		}
 
 	}
 
+	/**
+	 * 
+	 * @param a
+	 */
 	private void desbloquearBoton(String a) {
 		switch (a) {
 		case "p":
@@ -334,6 +398,10 @@ public class ControladorVista {
 		}
 	}
 
+	/**
+	 * 
+	 * @param event
+	 */
 	@FXML
 	public void moverCaret(ActionEvent event) {
 		if (event.getSource().equals(botonAnt)) {
@@ -341,24 +409,109 @@ public class ControladorVista {
 			int a = campoFormula.getCaretPosition();
 
 			if (a > 0) {
-				campoFormula.positionCaret(a - 1);
+
+				int pos = saltarAparentesis("i", a);
+
+				campoFormula.positionCaret(pos);
 			}
 
 		} else {
 			int a = campoFormula.getCaretPosition();
 
 			if (a < campoFormula.getText().length() + 1) {
-				campoFormula.positionCaret(a + 1);
+
+				int pos = saltarAparentesis("d", a);
+
+				campoFormula.positionCaret(pos);
 			}
 		}
 		campoFormula.requestFocus();
 	}
 
+	/**
+	 * 
+	 * @param dir
+	 * @param pos
+	 * @return
+	 */
+	private int saltarAparentesis(String dir, int pos) {
+
+		int p = 0;
+
+		String texto = campoFormula.getText();
+
+		pos = pos - 1;
+		if (dir.equals("i")) {
+
+			System.out.println("entra1");
+			for (int i = pos; i > 0; i--) {
+
+				if (pos - 1 > 0) {
+					System.err.println("#$%&/()=(/&%$#$%&/(");
+					if ((texto.charAt(pos) + "").equals(")") && (texto.charAt(pos - 1) + "").equals("(")) {
+
+						System.err.println("#######");
+						p = i;
+						break;
+					}
+				}
+			}
+		} else {
+			System.out.println("entra2");
+
+			for (int i = pos; i < texto.length() - 1; i++) {
+				System.err.println("#$%&/()=(/&%$#$%&/(");
+
+				if (pos + 1 < texto.length()) {
+					if ((texto.charAt(pos) + "").equals("(") && (texto.charAt(pos + 1) + "").equals(")")) {
+
+						p = i;
+						break;
+					}
+				}
+			}
+
+		}
+
+		return p;
+
+	}
+
+	/**
+	 * 
+	 */
+
 	@FXML
 	public void eliminarAtomo() {
 		campoFormula.setText("");
-		botonGuardarPremisa.setDisable(true);
-		botonGuardarConclusion.setDisable(true);
+//		botonGuardarPremisa.setDisable(true);
+//		botonGuardarConclusion.setDisable(true);
+
+	}
+
+	@FXML
+	public void salir() {
+		System.exit(0);
+
+	}
+
+	@FXML
+	public void verInfo() {
+		Alert a = new Alert(AlertType.INFORMATION, "Elaborado por " + "\n" + "Luis Felipe Tejada" + "\n"
+				+ "Neyder Figueroa" + "\n" + "Melissa Alvarez" + "\n" + "V1.0", ButtonType.OK);
+		a.setHeaderText("Acerca de");
+		a.showAndWait();
+
+	}
+
+	@FXML
+	public void verManual() {
+
+		try {
+			Desktop.getDesktop().open(new File("./resources/manual_usuario.docx"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 
 	}
 
@@ -399,6 +552,7 @@ public class ControladorVista {
 					buscarActualizar("u");
 
 				}
+				premisaElim = null;
 
 			} else {
 				Alert a = new Alert(AlertType.ERROR, "Debe seleccionar una premisa", ButtonType.OK);
@@ -425,6 +579,10 @@ public class ControladorVista {
 		if (!esta) {
 			atomosTotales.remove(s);
 		}
+		for (int i = 0; i < atomosTotales.size(); i++) {
+
+			System.err.println(atomosTotales.get(i));
+		}
 
 	}
 
@@ -433,11 +591,21 @@ public class ControladorVista {
 
 		premisas.clear();
 		campoConclusion.clear();
+		campoFormula.setText("");
 		conclusion = "";
-		actualizarFormaEstandar();
-		separadorConclusion.setVisible(false);
-		campoConclusion.setVisible(false);
+		campoConclusionFinal.setText("");
+		tablaVerificacionValidez.getColumns().clear();
 		atomosTotales.clear();
+		validador.limpiarResultados();
+		premisasOperables.clear();
+		premisasVisuales.clear();
+		premisaAeliminar = 0;
+		premisaElim = null;
+		actualizarFormaEstandar();
+
+		separadorConclusion.setVisible(false);
+		campoFormula.setDisable(false);
+		campoConclusion.setVisible(false);
 
 	}
 
@@ -453,6 +621,7 @@ public class ControladorVista {
 		@Override
 		public void handle(MouseEvent event) {
 			premisaElim = (TextField) event.getSource();
+			System.out.println(premisaElim.getId());
 
 			premisaAeliminar = Integer.parseInt(premisaElim.getId());
 		}
@@ -465,47 +634,45 @@ public class ControladorVista {
 
 	private boolean verificarFormulaBienFormada() {
 
-		String f = campoFormula.getText();
-		for (int i = 0; i < f.length(); i++) {
-
-			if (i + 2 < f.length()) {
-//				if ((f.charAt(i) + "").equals("(")&&) {
-//
-//				}
-			}
-
-		}
-		return true;
+		return !campoFormula.getText().contains("()");
 
 	}
 
 	@FXML
 	public void verificarValidez() {
 
-		for (int i = 0; i < premisas.size(); i++) {
+		if (premisas.size() >= 2 && !conclusion.isEmpty()) {
+			for (int i = 0; i < premisas.size(); i++) {
 
-			String prem = premisas.get(i);
-			prem = prem.replace("<->", "y");
-			prem = prem.replace("->", "e");
-			premisasOperables.add(prem);
+				String prem = premisas.get(i);
+				prem = prem.replace("<->", "y");
+				prem = prem.replace("->", "e");
+				premisasOperables.add(prem);
 
-		}
+			}
 
-		conclusion = conclusion.replace("<->", "y");
-		conclusion = conclusion.replace("->", "e");
-		premisasOperables.add(conclusion);
+			conclusion = conclusion.replace("<->", "y");
+			conclusion = conclusion.replace("->", "e");
+			premisasOperables.add(conclusion);
 
 //		premisasOperables.add("(p)e(q)");
 //		premisasOperables.add("p");
 //		premisasOperables.add("q");
 
-		System.out.println("Numero de  atomos" + atomosTotales.size());
-		boolean validez = validador.verificarValidezConjuntoFormulas(premisasOperables, atomosTotales.size());
-		System.err.println(validez);
-		cargarTabla(validador.getResultados());
-		validador.limpiarResultados();
+			System.out.println("Numero de  atomos" + atomosTotales.size());
+			boolean validez = validador.verificarValidezConjuntoFormulas(premisasOperables, atomosTotales.size());
+			System.err.println(validez);
+			cargarTabla(validador.getResultados());
+			validador.limpiarResultados();
 
-		mostrarConclusion(validez);
+			mostrarConclusion(validez);
+
+			campoFormula.setDisable(true);
+		} else {
+			Alert a = new Alert(AlertType.ERROR, "Recuerde que minimo debe ingresar 2 premisas y una conclusion",
+					ButtonType.OK);
+			a.showAndWait();
+		}
 
 	}
 

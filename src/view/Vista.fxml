@@ -175,7 +175,7 @@
                                                 </Lighting>
                                              </effect>
                                           </Separator>
-                                          <TextField fx:id="campoConclusion" alignment="TOP_CENTER" editable="false" promptText="Conclusion" />
+                                          <TextField fx:id="campoConclusion" alignment="TOP_CENTER" editable="false" promptText="Conclusion" visible="false" />
                                        </children></VBox>
                                  </center>
                               </BorderPane>
@@ -218,13 +218,14 @@
         <menus>
           <Menu mnemonicParsing="false" text="Opciones">
             <items>
-              <MenuItem mnemonicParsing="false" text="Salir" />
+              <MenuItem mnemonicParsing="false" onAction="#salir" text="Salir" />
+                  <MenuItem mnemonicParsing="false" onAction="#limpiarTodo" text="Limpiar" />
             </items>
           </Menu>
           <Menu mnemonicParsing="false" text="Ayuda">
             <items>
-                  <MenuItem mnemonicParsing="false" text="Ver manual de usuario" />
-              <MenuItem mnemonicParsing="false" text="Acerca de" />
+                  <MenuItem mnemonicParsing="false" onAction="#verManual" text="Ver manual de usuario" />
+              <MenuItem mnemonicParsing="false" onAction="#verInfo" text="Acerca de" />
             </items>
           </Menu>
         </menus>
