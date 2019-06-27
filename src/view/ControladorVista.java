@@ -3,11 +3,15 @@ package view;
 import java.awt.Desktop;
 import java.awt.Toolkit;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 
 import java.util.HashMap;
 
+import application.Main;
 import application.Validador;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -410,7 +414,7 @@ public class ControladorVista {
 
 			if (a > 0) {
 
-				int pos = saltarAparentesis("i", a);
+				int pos = a - 1;
 
 				campoFormula.positionCaret(pos);
 			}
@@ -420,61 +424,11 @@ public class ControladorVista {
 
 			if (a < campoFormula.getText().length() + 1) {
 
-				int pos = saltarAparentesis("d", a);
-
+				int pos = a + 1;
 				campoFormula.positionCaret(pos);
 			}
 		}
 		campoFormula.requestFocus();
-	}
-
-	/**
-	 * 
-	 * @param dir
-	 * @param pos
-	 * @return
-	 */
-	private int saltarAparentesis(String dir, int pos) {
-
-		int p = 0;
-
-		String texto = campoFormula.getText();
-
-		pos = pos - 1;
-		if (dir.equals("i")) {
-
-			System.out.println("entra1");
-			for (int i = pos; i > 0; i--) {
-
-				if (pos - 1 > 0) {
-					System.err.println("#$%&/()=(/&%$#$%&/(");
-					if ((texto.charAt(pos) + "").equals(")") && (texto.charAt(pos - 1) + "").equals("(")) {
-
-						System.err.println("#######");
-						p = i;
-						break;
-					}
-				}
-			}
-		} else {
-			System.out.println("entra2");
-
-			for (int i = pos; i < texto.length() - 1; i++) {
-				System.err.println("#$%&/()=(/&%$#$%&/(");
-
-				if (pos + 1 < texto.length()) {
-					if ((texto.charAt(pos) + "").equals("(") && (texto.charAt(pos + 1) + "").equals(")")) {
-
-						p = i;
-						break;
-					}
-				}
-			}
-
-		}
-
-		return p;
-
 	}
 
 	/**
@@ -506,11 +460,25 @@ public class ControladorVista {
 
 	@FXML
 	public void verManual() {
-
 		try {
-			Desktop.getDesktop().open(new File("./resources/manual_usuario.docx"));
-		} catch (IOException e) {
-			e.printStackTrace();
+			File temp = new File(System.getProperty("java.io.tmpdir") + "manualUsuario.pdf");
+			InputStream flujoEntrada = this.getClass().getResourceAsStream("/res/manual_usuario_1.pdf");
+			FileOutputStream flujoSalida = new FileOutputStream(temp);
+			FileWriter fw = new FileWriter(temp);
+			byte[] buffer = new byte[1024 * 512];
+
+			int control;
+
+			while ((control = flujoEntrada.read(buffer)) != -1) {
+				flujoSalida.write(buffer, 0, control);
+			}
+
+			fw.close();
+			flujoSalida.close();
+			flujoEntrada.close();
+
+			Desktop.getDesktop().open(temp);
+		} catch (IOException ex) {
 		}
 
 	}
@@ -602,6 +570,12 @@ public class ControladorVista {
 		premisaAeliminar = 0;
 		premisaElim = null;
 		actualizarFormaEstandar();
+
+		botonAtomoQ.setDisable(true);
+		botonAtomoR.setDisable(true);
+		botonAtomoS.setDisable(true);
+		botonAtomoT.setDisable(true);
+		botonAtomoU.setDisable(true);
 
 		separadorConclusion.setVisible(false);
 		campoFormula.setDisable(false);
@@ -706,7 +680,11 @@ public class ControladorVista {
 			TableColumn<StringProperty, String> nuevaColumna = new TableColumn<>();
 			tablaVerificacionValidez.getColumns().add(nuevaColumna);
 
-			nuevaColumna.setText(premisasOperables.get(i));
+			String p = premisasOperables.get(i);
+			p = p.replace("y", "<->");
+			p = p.replace("e", "->");
+
+			nuevaColumna.setText(p);
 
 			int a = i;
 			nuevaColumna.setCellValueFactory(

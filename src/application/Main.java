@@ -27,8 +27,8 @@ public class Main extends Application {
 
 		this.primaryStage = primaryStage;
 		this.primaryStage.setTitle("Verificador de Argumentos");
-		this.primaryStage.setResizable(false);
-		this.primaryStage.getIcons().add(new Image("file:./resources/lf.png"));
+		//this.primaryStage.setResizable(false);
+
 		iniciarVista();
 		
 	}
