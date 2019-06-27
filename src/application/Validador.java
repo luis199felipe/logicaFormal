@@ -37,7 +37,7 @@ public class Validador {
 			for (int i = 0; i < matriz.length && InterpValida; i++) {
 				System.out.println(i + " " + j + " " + matriz[i][j]);
 				if (matriz[i][j] == '1') {
-					if (i == matriz[0].length - 1) {
+					if (j == matriz[0].length - 1) {
 						return true;
 					}
 				} else {
@@ -49,7 +49,7 @@ public class Validador {
 				}
 			}
 		}
-		return false;
+		return true;
 
 	}
 
