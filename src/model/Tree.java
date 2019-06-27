@@ -480,7 +480,7 @@ public class Tree <T extends Comparable<T>>
 					}
 				}else if (n.getElemento().equals('e')) {
 					//System.out.println("paso el if v");
-					if (izq.equals('1') && der.equals('0')) {
+					if (izq.equals('0') && der.equals('1')) {
 						n.setValor('0');
 						//System.out.println("Va a setear "+n.getValor()+" por 1");
 					}else {
